@@ -29,6 +29,7 @@ from monthly_recap import (
     build_type_section,
     DEFAULT_THRESHOLDS,
     Thresholds,
+    _month_range,
 )
 
 
@@ -66,6 +67,23 @@ def _shift_week(week_start: datetime, week_end: datetime, weeks: int) -> tuple[d
 
 def _in_range(dt: Optional[datetime], start: datetime, end: datetime) -> bool:
     return dt is not None and start <= dt < end
+
+
+def _prev_month(year: int, month: int) -> tuple[int, int]:
+    """(year, month) 기준 바로 이전 달의 (year, month)를 반환."""
+    if month == 1:
+        return year - 1, 12
+    return year, month - 1
+
+
+def get_type_reference_lookback_start(last_week_start: datetime) -> datetime:
+    """3페이지 성공 사례의 유형 판별(완료 달이 아니라 그 '이전 달' 기준)에 필요한
+    데이터를 최소 어느 시점부터 가져와야 하는지 계산한다.
+
+    'last_week_start가 속한 달의 이전 달' 1일부터 가져오기.
+    """
+    prev_year, prev_month = _prev_month(last_week_start.year, last_week_start.month)
+    return _month_range(prev_year, prev_month)[0]
 
 
 # ---------------------------------------------------------------------------
@@ -190,12 +208,15 @@ def _week_has_deposit(
     )
 
 
+MAX_STREAK_LOOKBACK_WEEKS = 52  # weekly_batch.py의 거래 조회 기간(since)도 반드시 이 값에 맞춰야 함
+
+
 def compute_streak_weeks(
     account_id: str,
     last_week_start: datetime,
     last_week_end: datetime,
     savings_tx: Sequence[SavingsTransaction],
-    max_lookback_weeks: int = 52,
+    max_lookback_weeks: int = MAX_STREAK_LOOKBACK_WEEKS,
 ) -> int:
     """지난주부터 거꾸로 훑으며, 저축이 1건도 없는 주가 나올 때까지의 연속 주 수(스트릭)."""
     streak = 0
@@ -359,8 +380,11 @@ def compute_academy_success_stories(
         user = user_by_id.get(account.user_id)
         student_name = user.name if user is not None else "친구"
 
-        # 유형 타이틀: 완료 시점이 속한 달 기준으로 월간 유형 판별 로직을 재사용
-        ref_year, ref_month = wish.closed_at.year, wish.closed_at.month
+        # 유형 타이틀: 완료 시점이 속한 '달' 자체가 아니라, 그 '이전 달' 기준으로 판별한다.
+        # 완료된 달은 목표 달성을 위한 막판 집중 저축 등으로 지표(pace_bias, save_count 등)가
+        # 일시적으로 왜곡될 수 있어서, 완료 이전에 이 학생이 평소 보이던 저축 유형을 보여주기 위함.
+        completion_year, completion_month = wish.closed_at.year, wish.closed_at.month
+        ref_year, ref_month = _prev_month(completion_year, completion_month)
         metrics = compute_core_metrics(wish.account_id, ref_year, ref_month, wishes, savings_tx, visits)
         classification = classify_savings_type(metrics, thresholds)
         type_title = build_type_section(classification)["type_title"]
@@ -382,14 +406,15 @@ def compute_academy_success_stories(
 def build_page3(stories: Sequence[SuccessStory]) -> dict:
     if not stories:
         return {
-            "wish_ids": [],
+            "stories": [],
             "message_summary": "지난주엔 아직 완주한 학원 친구가 없어요. 이번 주 첫 주인공이 되어볼까요?",
         }
 
     summary = f"우리 학원 친구 {len(stories)}명이 목표를 이뤘어요!"
 
     return {
-        "wish_ids": [s.wish_id for s in stories],  # wish_id 리스트만 심플하게 전달
+        # wish_id와, 그 학생의 유형 타이틀(완료 달의 이전 달 기준)을 함께 전달
+        "stories": [{"wish_id": s.wish_id, "type_title": s.type_title} for s in stories],
         "message_summary": summary,
     }
 

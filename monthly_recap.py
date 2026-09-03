@@ -447,13 +447,23 @@ def compute_pattern_analysis(
     else:
         message_week_weekday = "이번 달은 저축 패턴을 분석하기엔 데이터가 부족해요."
 
+    # 규칙성 문구용 평균 저축 간격 계산
+    # (판정 기준은 계속 regularity_std<3을 쓰지만, 문구에 "평균 X일 주기"라고 표현할 값은
+    #  표준편차가 아니라 실제 평균 간격이어야 하므로 별도로 계산한다.)
+    deposit_dates = sorted({tx.created_at.date() for tx in deposits})
+    if len(deposit_dates) >= 2:
+        gaps = [(deposit_dates[i + 1] - deposit_dates[i]).days for i in range(len(deposit_dates) - 1)]
+        mean_gap = sum(gaps) / len(gaps)
+    else:
+        mean_gap = None
+
     # 규칙성 문구 (3일 미만 = 규칙적)
-    if metrics.regularity_std is None:
+    if metrics.regularity_std is None or mean_gap is None:
         message_regularity = "저축 횟수가 적어 규칙성을 판단하기 어려워요."
     elif metrics.regularity_std < 3:
-        message_regularity = f"평균 {metrics.regularity_std:.1f}일 주기로 아주 일정하게 저축했어요."
+        message_regularity = f"평균 {mean_gap:.1f}일 주기로 아주 일정하게 저축했어요."
     else:
-        message_regularity = f"저축 간격이 평균 {metrics.regularity_std:.1f}일로 다소 불규칙했어요."
+        message_regularity = f"저축 간격이 평균 {mean_gap:.1f}일로 다소 불규칙했어요."
 
     message_avg_amount = f"한 번에 평균 {metrics.avg_amount:,.0f}원씩 나누어 담았어요."
 
@@ -555,12 +565,54 @@ def compute_peer_group_metrics(
     return PeerGroupMetrics(peer_active_weeks=peer_active_weeks, peer_achievement_rates=peer_achievement_rates)
 
 
-def _percentile_rank(value: float, peer_values: Sequence[float]) -> float:
-    """value가 peer_values 중 상위 몇 %인지 반환 (값이 클수록 상위)."""
+class PercentileStatus(str, Enum):
+    OK = "ok"                # 정상적으로 백분위 계산 가능
+    NO_PEERS = "no_peers"    # 비교 대상(peer_values) 자체가 없음
+    ALL_TIED = "all_tied"    # 비교 대상은 있으나 나를 포함해 전원 값이 동일해 순위를 가릴 수 없음
+
+
+@dataclass
+class PercentileResult:
+    percentile: Optional[int]  # status가 OK일 때만 값이 있고, 그 외엔 None
+    status: PercentileStatus
+
+
+def _percentile_rank(value: float, peer_values: Sequence[float]) -> PercentileResult:
+    """value가 peer_values 중 상위 몇 %인지 반환 (값이 클수록 상위).
+
+    - 비교 대상이 아예 없으면 NO_PEERS
+    - 비교 대상은 있지만 나를 포함해 전원 값이 같아 우열을 가릴 수 없으면 ALL_TIED
+    - 그 외엔 정상적으로 백분위를 계산해 OK로 반환
+    """
     if not peer_values:
-        return 0.0
-    better_or_equal = sum(1 for v in peer_values if v <= value)
-    return round(better_or_equal / len(peer_values) * 100)
+        return PercentileResult(percentile=None, status=PercentileStatus.NO_PEERS)
+
+    if all(v == value for v in peer_values):
+        return PercentileResult(percentile=None, status=PercentileStatus.ALL_TIED)
+
+    strictly_less = sum(1 for v in peer_values if v < value)
+    tied = sum(1 for v in peer_values if v == value)
+
+    # 표준 백분위 정의: 동점자는 중간 순위 부여
+    rank_score = strictly_less + (tied * 0.5)
+    percentile = round((rank_score / len(peer_values)) * 100)
+
+    # 상위 0% 방지를 위한 안전 범위 클램핑 (1 ~ 99)
+    percentile = int(min(max(percentile, 1), 99))
+
+    return PercentileResult(percentile=percentile, status=PercentileStatus.OK)
+
+
+def _percentile_message(result: PercentileResult, label: str, academy_name: str) -> Optional[str]:
+    """label 예: '저축 습관 유지율', '목표 달성률'. status별로 다른 문구를 반환."""
+    if result.status == PercentileStatus.NO_PEERS:
+        return f"아직 비교할 수 있는 {academy_name} 친구가 없어요."
+    if result.status == PercentileStatus.ALL_TIED:
+        return f"{academy_name} 친구들과 {label}이 동점이라 순위를 매길 수 없어요."
+    if result.status == PercentileStatus.OK:
+        return f"{academy_name} 친구들 중 {label} 상위 {100 - result.percentile}%예요."
+    # 위 세 가지 외의 예외 상황을 위한 안전망 (현재는 도달하지 않지만, 향후 상태가 추가돼도 크래시 없이 처리)
+    return f"{label} 비교 결과를 확인할 수 없어요."
 
 
 def compute_group_comparison(
@@ -570,21 +622,29 @@ def compute_group_comparison(
     peer_achievement_rates: Sequence[float],
     academy_name: str,
 ) -> dict:
-    habit_percentile = _percentile_rank(my_active_weeks, peer_active_weeks)
-
+    habit_result = _percentile_rank(my_active_weeks, peer_active_weeks)
     result = {
-        "habit_percentile": habit_percentile,
-        "message_habit": f"{academy_name} 친구들 중 저축 습관 유지율 상위 {100 - habit_percentile}%예요.",
+        "habit_percentile": habit_result.percentile,
+        "habit_percentile_status": habit_result.status.value,
+        "message_habit": _percentile_message(habit_result, "저축 습관 유지율", academy_name),
     }
 
-    if my_achievement_rate is not None and peer_achievement_rates:
-        achievement_percentile = _percentile_rank(my_achievement_rate, peer_achievement_rates)
+    if my_achievement_rate is not None:
+        # 대표 위시가 있어 내 달성률 자체는 있는 경우: peer가 없거나(NO_PEERS) 전원 동점(ALL_TIED)이어도
+        # _percentile_rank가 알아서 상태를 구분해 반환한다.
+        achievement_result = _percentile_rank(my_achievement_rate, peer_achievement_rates)
         result.update({
-            "achievement_percentile": achievement_percentile,
-            "message_achievement": f"{academy_name} 친구들 중 목표 달성률 상위 {100 - achievement_percentile}%를 기록했어요.",
+            "achievement_percentile": achievement_result.percentile,
+            "achievement_percentile_status": achievement_result.status.value,
+            "message_achievement": _percentile_message(achievement_result, "목표 달성률", academy_name),
         })
     else:
-        result.update({"achievement_percentile": None, "message_achievement": None})
+        # 나 자신이 대표 위시가 없어 달성률 자체를 낼 수 없는 경우 (Q02/Q03과 동일한 케이스)
+        result.update({
+            "achievement_percentile": None,
+            "achievement_percentile_status": None,
+            "message_achievement": None,
+        })
 
     return result
 
@@ -599,8 +659,11 @@ def compute_pace_prediction(
     today: date,
     year: int,
     month: int,
+    savings_tx: Sequence[SavingsTransaction],
 ) -> dict:
     days_in_month = monthrange(year, month)[1]
+
+    # 일평균 저축 속도(daily_pace)는 대표 위시 유무와 무관하게 '계좌 전체' 저축 기록 기준으로 항상 계산한다.
     daily_pace = total_savings_this_month / days_in_month if days_in_month else 0.0
 
     result = {
@@ -608,7 +671,34 @@ def compute_pace_prediction(
         "message_daily_pace": f"하루 평균 {daily_pace:,.0f}원씩 모으는 속도예요.",
     }
 
-    if representative_wish is None or daily_pace <= 0:
+    if representative_wish is None:
+        result.update({
+            "expected_completion_date": None,
+            "message_expected_date": None,
+            "required_daily_amount": None,
+            "message_required_daily": None,
+        })
+        return result
+
+    # 여기서부터는 '대표 위시 전용 페이스(wish_pace)'를 따로 계산해서 예상 완료일/필요 저축액에만 쓴다.
+    # (daily_pace는 계좌 전체 기준이라 대표 위시가 아닌 다른 위시에 저축한 돈까지 섞여있을 수 있어서,
+    #  대표 위시 하나만 놓고 봤을 때의 속도를 별도로 구해야 정확하다.)
+    start, end = _month_range(year, month)
+
+    # 분자: 이번 달 동안 '대표 위시'에만 발생한 순변동액 (입금/출금/이체출/이체입/환급 전부 반영)
+    wish_net_change_this_month = _month_net_change(representative_wish.wish_id, start, end, savings_tx)
+
+    # 분모: 이번 달 중에 대표 위시를 새로 만들었으면 '그 날짜부터 월말까지'의 일수,
+    #       그 이전(지난달 이전)에 이미 있던 위시면 '월 전체' 일수.
+    if representative_wish.created_at < start:
+        wish_pace_days = days_in_month
+    else:
+        month_last_day = date(year, month, days_in_month)
+        wish_pace_days = (month_last_day - representative_wish.created_at.date()).days + 1
+
+    wish_pace = (wish_net_change_this_month / wish_pace_days) if wish_pace_days > 0 else 0.0
+
+    if wish_pace <= 0:
         result.update({
             "expected_completion_date": None,
             "message_expected_date": None,
@@ -619,32 +709,35 @@ def compute_pace_prediction(
 
     remaining_amount = max(representative_wish.target_amount - representative_wish.saved_amount, 0)
 
-    # 현재 페이스 유지 시 달성 예상일
+    # 현재 페이스(wish_pace) 유지 시 달성 예상일
     if remaining_amount == 0:
         expected_date = today
-        result["message_expected_date"] = "이미 목표 금액을 달성했어요!"
+        result["message_expected_date"] = f"'{representative_wish.title}' 목표는 이미 달성했어요!"
     else:
-        days_needed = remaining_amount / daily_pace
+        days_needed = remaining_amount / wish_pace
         expected_date = today + timedelta(days=days_needed)
         result["message_expected_date"] = (
-            f"지금 페이스를 유지하면 {expected_date.month}월 {expected_date.day}일에 목표를 달성할 수 있어요!"
+            f"지금 페이스를 유지하면 '{representative_wish.title}' 목표를 "
+            f"{expected_date.month}월 {expected_date.day}일에 달성할 수 있어요!"
         )
     result["expected_completion_date"] = expected_date
 
-    # 기한 내 달성을 위한 1일 필요 저축액
+    # 기한 내 달성을 위한 1일 필요 저축액 (wish_pace와 비교해 부족한 만큼만 안내)
     if representative_wish.target_date is not None:
         days_left = (representative_wish.target_date - today).days
         if days_left > 0:
             required_daily = remaining_amount / days_left
-            extra_needed = max(required_daily - daily_pace, 0)
+            extra_needed = max(required_daily - wish_pace, 0)
             result["required_daily_amount"] = required_daily
             result["message_required_daily"] = (
-                f"목표 기간에 맞추려면 매일 {extra_needed:,.0f}원씩 더 저축하면 돼요."
-                if extra_needed > 0 else "지금 페이스로도 기한 내 목표 달성이 가능해요!"
+                f"'{representative_wish.title}' 목표 기간에 맞추려면 매일 {extra_needed:,.0f}원씩 더 저축하면 돼요."
+                if extra_needed > 0 else f"지금 페이스로도 '{representative_wish.title}' 목표를 기한 내 달성할 수 있어요!"
             )
         else:
             result["required_daily_amount"] = None
-            result["message_required_daily"] = "목표 마감일이 이미 지났어요. 새 목표 기한을 설정해보는 건 어떨까요?"
+            result["message_required_daily"] = (
+                f"'{representative_wish.title}' 목표 마감일이 이미 지났어요. 새 목표 기한을 설정해보는 건 어떨까요?"
+            )
     else:
         result["required_daily_amount"] = None
         result["message_required_daily"] = None
@@ -694,7 +787,7 @@ def generate_monthly_recap(
     )
 
     representative = get_representative_wish(account_id, wishes)
-    pace = compute_pace_prediction(representative, metrics.total_savings, today, year, month)
+    pace = compute_pace_prediction(representative, metrics.total_savings, today, year, month, savings_tx)
 
     return {
         "account_id": account_id,

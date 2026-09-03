@@ -58,10 +58,10 @@ def present_weekly_recap(raw_result: dict) -> dict:
             "message_visits": p2["message_visits"],
             "message_growth": p2["message_growth"],
         },
-        # 3페이지: 학원 친구들의 성공 스토리 (텍스트 대신 wish_id 리스트)
+        # 3페이지: 학원 친구들의 성공 스토리 (텍스트 대신 wish_id + type_title 쌍의 리스트)
         "page3_academy_success_stories": {
             "message_summary": p3.get("message_summary") or p3.get("message"),
-            "wish_ids": p3.get("wish_ids", []),
+            "stories": p3.get("stories", []),
         },
     }
 

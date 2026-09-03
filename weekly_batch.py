@@ -29,7 +29,14 @@ from monthly_recap import (
     CardAccount,
     UserProfile,
 )
-from weekly_recap import FeedPost, generate_weekly_recap, get_last_week_range, compute_academy_success_stories
+from weekly_recap import (
+    FeedPost,
+    generate_weekly_recap,
+    get_last_week_range,
+    compute_academy_success_stories,
+    MAX_STREAK_LOOKBACK_WEEKS,
+    get_type_reference_lookback_start,
+)
 
 # CSV 데이터 폴더: 이 스크립트와 같은 위치의 'data' 폴더
 DATA_DIR = Path(__file__).resolve().parent / "data"
@@ -269,8 +276,14 @@ def run_academy_weekly_recap(academy_id: str, reference_date: date) -> dict:
     (활동량과 무관하게 전원 포함)"""
 
     last_week_start, last_week_end = get_last_week_range(reference_date)
-    two_weeks_ago_start = last_week_start - timedelta(weeks=1)   # 2페이지 증감률 계산용
-    six_months_ago = last_week_start - timedelta(days=180)        # 스트릭 판단용 넉넉한 과거 범위
+    # 2페이지 증감률 계산용(전주 방문 데이터 필요)과
+    # 3페이지 유형 판별용(완료 달의 '이전 달' 데이터 필요) 중 더 이른 시점을 기준으로 방문 데이터를 가져온다.
+    prev_week_lookback_start = last_week_start - timedelta(weeks=1)
+    type_reference_lookback_start = get_type_reference_lookback_start(last_week_start)
+    visits_lookback_start = min(prev_week_lookback_start, type_reference_lookback_start)
+    # 스트릭 계산이 최대 MAX_STREAK_LOOKBACK_WEEKS(52)주까지 거슬러 올라가므로,
+    # 거래 조회 기간도 반드시 이 값과 맞춰야 데이터 부족으로 스트릭이 실제보다 짧게 끊기지 않는다.
+    streak_lookback_start = last_week_start - timedelta(weeks=MAX_STREAK_LOOKBACK_WEEKS)
 
     # (1) 학원 단위로 필요한 데이터를 한 번에 조회
     card_account_rows = fetch_card_accounts(academy_id)
@@ -284,12 +297,12 @@ def run_academy_weekly_recap(academy_id: str, reference_date: date) -> dict:
 
     savings_tx = [
         to_savings_transaction(r)
-        for r in fetch_savings_transactions(account_ids, since=six_months_ago)
+        for r in fetch_savings_transactions(account_ids, since=streak_lookback_start)
     ]
 
     visits = [
         to_profile_visit(r)
-        for r in fetch_profile_visits(account_ids, since=two_weeks_ago_start)
+        for r in fetch_profile_visits(account_ids, since=visits_lookback_start)
     ]
 
     feed_posts = [
@@ -338,8 +351,10 @@ def _flatten_weekly_student_result(result: dict) -> dict:
     p2 = result["page2_growth_report"]
     p3 = result["page3_academy_success_stories"]
 
-    # wish_id 목록을 쉼표로 연결 (예: "w-101,w-105,w-203")
-    wish_ids_joined = ",".join(p3.get("wish_ids", []))
+    # 3페이지 (wish_id + type_title 쌍의 리스트로 변경됨)
+    stories = p3.get("stories", [])
+    wish_ids_joined = ",".join(s["wish_id"] for s in stories)
+    type_titles_joined = ",".join(s["type_title"] or "" for s in stories)
 
     return {
         "account_id": result["account_id"],
@@ -364,9 +379,10 @@ def _flatten_weekly_student_result(result: dict) -> dict:
         "visit_growth_pct": p2["growth_pct"],
         "visit_message": p2["message_visits"],
         "visit_growth_message": p2["message_growth"],
-        # 3페이지 (텍스트 대신 wish_id 목록으로 변경)
+        # 3페이지 (텍스트 대신 wish_id + type_title 목록으로 변경)
         "page3_message_summary": p3.get("message_summary"),
         "page3_wish_ids": wish_ids_joined,
+        "page3_type_titles": type_titles_joined,
     }
 
 
