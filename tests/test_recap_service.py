@@ -1,15 +1,19 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import hashlib
 from io import BytesIO
 import json
+from pathlib import Path
 import unittest
+from urllib.request import Request, urlopen
 
 from recap_service.app import REQUEST_LIMIT, create_app
 from recap_service.errors import InvalidRecapInput, MalformedRequest
 from recap_service.generator import generate_recap
-from recap_service.json_codec import digest, parse_json, response_bytes
+from recap_service.json_codec import canonical_bytes, digest, parse_json, response_bytes
 from recap_service.validation import validate_request
+from tests.real_service_harness import running_recap_service
 
 
 GENERATION = "00000000-0000-4000-8000-000000000001"
@@ -70,6 +74,18 @@ def resign(request: dict) -> dict:
     return request
 
 
+def legacy_insertion_order_digest(request: dict) -> str:
+    digestable = {key: value for key, value in request.items() if key not in {"generation_id", "input_digest"}}
+    encoded = json.dumps(
+        digestable,
+        ensure_ascii=False,
+        allow_nan=False,
+        sort_keys=False,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return "sha256:" + hashlib.sha256(encoded).hexdigest()
+
+
 def add_deposit(request: dict, day: int, amount: int = 1000) -> None:
     index = len(request["input"]["effective_transactions"]) + 10
     request["input"]["effective_transactions"].append({
@@ -81,6 +97,20 @@ def add_deposit(request: dict, day: int, amount: int = 1000) -> None:
     })
     request["input"]["wishes"][0]["saved_amount_at_period_end"] += amount
     resign(request)
+
+
+class CanonicalJsonTest(unittest.TestCase):
+    def test_shared_java_python_numeric_and_unicode_vectors(self):
+        path = Path(__file__).parent / "fixtures" / "jcs-cross-language-vectors.jsonl"
+        vectors = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+        for vector in vectors:
+            with self.subTest(vector=vector["name"]):
+                self.assertEqual(canonical_bytes(vector["value"]).decode("utf-8"), vector["canonical"])
+                self.assertEqual(digest(vector["value"]), vector["digest"])
+
+    def test_unpaired_unicode_surrogates_are_rejected(self):
+        with self.assertRaisesRegex(ValueError, "surrogate"):
+            canonical_bytes({"value": "\ud800"})
 
 
 class ContractValidationTest(unittest.TestCase):
@@ -106,6 +136,21 @@ class ContractValidationTest(unittest.TestCase):
     def test_digest_detects_snapshot_tampering(self):
         request = request_for()
         request["reference_date"] = "2026-08-29"
+        with self.assertRaises(InvalidRecapInput):
+            validate_request(request, GENERATION)
+
+    def test_digest_is_independent_of_object_insertion_order(self):
+        request = request_for()
+        request["input"]["visit_metrics"] = dict(reversed(list(request["input"]["visit_metrics"].items())))
+        request["input"] = dict(reversed(list(request["input"].items())))
+        request = dict(reversed(list(request.items())))
+        self.assertIs(validate_request(request, GENERATION), request)
+
+    def test_legacy_insertion_order_digest_is_rejected(self):
+        request = request_for()
+        legacy = legacy_insertion_order_digest(request)
+        self.assertNotEqual(legacy, request["input_digest"])
+        request["input_digest"] = legacy
         with self.assertRaises(InvalidRecapInput):
             validate_request(request, GENERATION)
 
@@ -176,8 +221,8 @@ class GenerationTest(unittest.TestCase):
 
 
 class HttpApplicationTest(unittest.TestCase):
-    def call(self, request: dict | None, **overrides):
-        body = response_bytes(request) if request is not None else b"{}"
+    def call(self, request: dict | None, raw_body: bytes | None = None, **overrides):
+        body = raw_body if raw_body is not None else (response_bytes(request) if request is not None else b"{}")
         environ = {
             "REQUEST_METHOD": "POST",
             "PATH_INFO": "/internal/v1/recap-generations",
@@ -217,6 +262,47 @@ class HttpApplicationTest(unittest.TestCase):
         status, _, result = self.call(request_for(), CONTENT_LENGTH=str(REQUEST_LIMIT + 1))
         self.assertEqual(status, "413 Payload Too Large")
         self.assertEqual(result["code"], "PAYLOAD_TOO_LARGE")
+
+    def test_wsgi_accepts_reordered_unicode_and_numeric_jcs_input(self):
+        request = request_for()
+        request["input"]["wishes"][0]["title"] = "😀 자전거 €"
+        request["input"]["peer_metrics"]["achievement_rates"] = [333333333.33333329, 1e-7]
+        resign(request)
+        request["input"] = dict(reversed(list(request["input"].items())))
+        request = dict(reversed(list(request.items())))
+        body = json.dumps(request, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        status, _, result = self.call(None, raw_body=body)
+        self.assertEqual(status, "200 OK")
+        self.assertEqual(result["input_digest"], request["input_digest"])
+
+    def test_wsgi_rejects_legacy_insertion_order_digest(self):
+        request = request_for()
+        request["input_digest"] = legacy_insertion_order_digest(request)
+        status, _, result = self.call(request)
+        self.assertEqual(status, "422 Unprocessable Content")
+        self.assertEqual(result["code"], "RECAP_INPUT_INVALID")
+        self.assertEqual(result["field_errors"], ["input_digest"])
+
+
+class RealServiceProcessTest(unittest.TestCase):
+    def test_ephemeral_service_is_ready_and_serves_the_real_wsgi_app(self):
+        request = request_for()
+        body = response_bytes(request)
+        with running_recap_service() as service:
+            http_request = Request(
+                service.base_url + "/internal/v1/recap-generations",
+                data=body,
+                method="POST",
+                headers={
+                    "Authorization": "Bearer " + service.token,
+                    "Content-Type": "application/json",
+                    "Idempotency-Key": GENERATION,
+                },
+            )
+            with urlopen(http_request, timeout=5) as response:
+                self.assertEqual(response.status, 200)
+                self.assertEqual(json.loads(response.read()), json.loads(response_bytes(generate_recap(request))))
+            self.assertIsNone(service.process.poll())
 
 
 if __name__ == "__main__":

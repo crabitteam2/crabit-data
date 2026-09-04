@@ -220,9 +220,6 @@ def validate_request(request: dict[str, Any], idempotency_key: str | None) -> di
     _instant(request["snapshot_at"], "snapshot_at")
     _validate_input(request["input"])
     digestable = {key: value for key, value in request.items() if key not in {"generation_id", "input_digest"}}
-    # The canonical contract is sorted JSON. The second form is accepted for the
-    # current Java producer, whose LinkedHashMap serialization is stable but ordered.
-    expected = {digest(digestable, sort_keys=True), digest(digestable, sort_keys=False)}
-    if request["input_digest"] not in expected:
+    if request["input_digest"] != digest(digestable):
         raise InvalidRecapInput("input_digest does not match the request snapshot.", ["input_digest"])
     return request
