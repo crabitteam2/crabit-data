@@ -168,6 +168,7 @@ def recommend_feeds_for_student(
         wishes=wishes,
         visits=visits,
         card_accounts=card_accounts,
+        now=now,
         top_n=100,
     )
     if not candidates:

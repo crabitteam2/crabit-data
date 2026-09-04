@@ -18,7 +18,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from difflib import SequenceMatcher
 from typing import Optional, Sequence
 
@@ -81,6 +81,7 @@ class FeedCandidate:
     wish_status: str
     kind: str
     updated_at: datetime
+    closed_at: Optional[datetime]
 
     basic_similarity: float       # 카테고리/금액대/기간 3개 중 일치 비율 (0, 1/3, 2/3, 1)
     title_similarity: float       # 위시 제목 문자열 유사도 (0~1)
@@ -100,6 +101,9 @@ WEIGHT_VISITED_AUTHOR = 0.25
 WEIGHT_VISITED_CATEGORY = 0.15
 
 
+RECENT_VISIT_WINDOW_DAYS = 90  # 방문 이력을 관심 신호로 인정하는 기간 (약 3개월)
+
+
 def extract_candidates(
     viewer_account_id: str,
     academy_id: str,
@@ -107,10 +111,12 @@ def extract_candidates(
     wishes: Sequence[Wish],
     visits: Sequence,  # ProfileVisit
     card_accounts: Sequence[CardAccount],
+    now: datetime | None = None,
     top_n: int = 100,
 ) -> list[FeedCandidate]:
     """같은 학원 피드 전체에서, 사용자와 관련성이 높은 순으로 top_n개만 골라 2단계로 넘긴다."""
 
+    now = now or datetime.now()
     wish_by_id = {w.wish_id: w for w in wishes}
     account_by_id = {a.account_id: a for a in card_accounts}
 
@@ -123,15 +129,29 @@ def extract_candidates(
     else:
         viewer_category = viewer_amount_bucket = viewer_duration_bucket = None
 
-    # 과거 방문 정보: 이 사용자가 방문했던 계정들 + 그 계정들 위시의 카테고리
-    visited_accounts = {
-        v.visited_account_id for v in visits if v.visitor_account_id == viewer_account_id
-    }
-    visited_categories = {
-        classify_wish_category(w.title)
-        for w in wishes
-        if w.account_id in visited_accounts and w.deleted_at is None
-    }
+    # 과거 방문 정보: 최근 3개월 이내 방문만 관심 신호로 인정
+    recent_cutoff = now - timedelta(days=RECENT_VISIT_WINDOW_DAYS)
+    recent_visits = [
+        v for v in visits
+        if v.visitor_account_id == viewer_account_id and recent_cutoff <= v.created_at <= now
+    ]
+    visited_accounts = {v.visited_account_id for v in recent_visits}
+
+    # 방문 카테고리: 방문 "이벤트" 단위 스냅샷
+    # - 방문 시점 이전에 생성됐고, 방문 시점까지 삭제되지 않았고, 공유(feed_posts에 존재)된 위시만 인정
+    shared_wish_ids = {fp.wish_id for fp in feed_posts}
+    visited_categories: set[str] = set()
+    for v in recent_visits:
+        for w in wishes:
+            if w.account_id != v.visited_account_id:
+                continue
+            if w.created_at > v.created_at:
+                continue
+            if w.deleted_at is not None and w.deleted_at <= v.created_at:
+                continue
+            if w.wish_id not in shared_wish_ids:
+                continue
+            visited_categories.add(classify_wish_category(w.title))
 
     candidates: list[FeedCandidate] = []
     for fp in feed_posts:
@@ -183,6 +203,7 @@ def extract_candidates(
             wish_status=wish.status.value,
             kind=fp.kind,
             updated_at=fp.updated_at,
+            closed_at=wish.closed_at,
             basic_similarity=basic_similarity,
             title_similarity=title_similarity,
             visited_author_before=visited_author_before,

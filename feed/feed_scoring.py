@@ -29,6 +29,7 @@ from monthly_recap import (
     DEFAULT_THRESHOLDS,
     Thresholds,
 )
+from weekly_recap import _prev_month
 from feed.candidate_extraction import FeedCandidate
 
 
@@ -147,7 +148,11 @@ def compute_candidate_features(
     now: datetime,
     thresholds: Thresholds = DEFAULT_THRESHOLDS,
 ) -> CandidateFeatures:
-    ref_year, ref_month = candidate.updated_at.year, candidate.updated_at.month
+    # 완료 피드는 '완료 시점(closed_at)의 이전 달', 그 외는 '추천 시점(now)의 이전 달' 기준.
+    if candidate.wish_status == "완료":
+        ref_year, ref_month = _prev_month(candidate.closed_at.year, candidate.closed_at.month)
+    else:
+        ref_year, ref_month = _prev_month(now.year, now.month)
     candidate_metrics = compute_core_metrics(
         candidate.account_id, ref_year, ref_month, wishes, savings_tx, visits
     )
@@ -189,7 +194,7 @@ def score_and_rank_candidates(
     now = now or datetime.now()
     scorer = scorer or WeightedSumScorer()
 
-    ref_year, ref_month = now.year, now.month
+    ref_year, ref_month = _prev_month(now.year, now.month)
     viewer_metrics = compute_core_metrics(viewer_account_id, ref_year, ref_month, wishes, savings_tx, visits)
     viewer_classification = classify_savings_type(viewer_metrics, thresholds)
 

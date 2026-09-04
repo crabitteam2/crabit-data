@@ -6,10 +6,10 @@
 
     1. MMR(Maximal Marginal Relevance): 관련성과 다양성을 함께 고려해 초안 순서 생성
     2. 최근 48시간 내 달성된 완료 피드 강제 포함 (초안에 없으면 끼워넣기)
-    3. 상위 10개 중 '불도저형'/'꾸준형' 모범 달성 피드 최소 2개 보장
-    4. 동일 카테고리 연속 2개 제한 (마지막에 순서만 재배치, 구성은 유지)
+    3. 동일 카테고리 연속 2개 제한 (순서 재배치, 구성은 유지)
+    4. 상위 10개 중 '불도저형'/'꾸준형' 모범 달성 피드 최소 2개 보장
 
-2, 3번은 '어떤 피드가 포함되는가'(구성)를 바꾸고, 4번은 '어떤 순서로 보여주는가'만 바꾼다.
+2, 4번은 '어떤 피드가 포함되는가'(구성)를 바꾸고, 3번은 '어떤 순서로 보여주는가'만 바꾼다.
 """
 
 from __future__ import annotations
@@ -78,7 +78,9 @@ def apply_mmr(
 def _is_recent_completion(s: ScoredFeedCandidate, now: datetime, recent_hours: float) -> bool:
     if s.candidate.wish_status != "완료":
         return False
-    hours = (now - s.candidate.updated_at).total_seconds() / 3600
+    if s.candidate.closed_at is None:
+        return False
+    hours = (now - s.candidate.closed_at).total_seconds() / 3600
     return 0 <= hours <= recent_hours
 
 
@@ -112,11 +114,29 @@ def _is_role_model_success(s: ScoredFeedCandidate) -> bool:
     return s.features.author_type in ROLE_MODEL_TYPES and s.candidate.wish_status == "완료"
 
 
+def _violates_spacing_at(
+    categories: Sequence[str], pos: int, new_category: str, max_consecutive: int
+) -> bool:
+    """categories[pos]를 new_category로 바꿨을 때, pos를 포함하는 어떤 구간이든
+    길이 max_consecutive만큼 전부 같은 카테고리가 되는지 확인."""
+    categories = list(categories)
+    categories[pos] = new_category
+    n = len(categories)
+    window_start_lo = max(0, pos - max_consecutive + 1)
+    window_start_hi = min(pos, n - max_consecutive)
+    for ws in range(window_start_lo, window_start_hi + 1):
+        window = categories[ws: ws + max_consecutive]
+        if len(window) == max_consecutive and len(set(window)) == 1:
+            return True
+    return False
+
+
 def ensure_role_model_in_top(
     ordered: list[ScoredFeedCandidate],
     all_scored: Sequence[ScoredFeedCandidate],
     top_window: int,
     min_count: int,
+    max_consecutive_same_category: int | None = None,
 ) -> list[ScoredFeedCandidate]:
     top_slice = ordered[:top_window]
     current_count = sum(1 for s in top_slice if _is_role_model_success(s))
@@ -154,15 +174,37 @@ def ensure_role_model_in_top(
     )
 
     # 4. 안전하게 교체 및 재배치 (밀려난 피드는 뒤로 보내기)
-    for pos, new_cand in zip(replaceable_positions, to_insert):
+    # 카테고리 연속 제한을 깨지 않는 자리를 우선으로 찾고, 없으면 점수 낮은 자리부터 사용
+    categories_snapshot = [s.candidate.wish_category for s in result]
+    remaining_positions = list(replaceable_positions)
+
+    for new_cand in to_insert:
+        if not remaining_positions:
+            break
+
+        pos = None
+        if max_consecutive_same_category is not None:
+            for candidate_pos in remaining_positions:
+                if not _violates_spacing_at(
+                    categories_snapshot, candidate_pos,
+                    new_cand.candidate.wish_category, max_consecutive_same_category,
+                ):
+                    pos = candidate_pos
+                    break
+        if pos is None:
+            pos = remaining_positions[0]  # 안전한 자리가 없으면 기존 방식(점수 최저 자리)으로 폴백
+
+        remaining_positions.remove(pos)
+
         # 이미 11위 이하에 있던 피드를 올리는 경우, 중복 방지를 위해 기존 위치에서 제거
         if new_cand in result[top_window:]:
             result.remove(new_cand)
-        
+
         # 10위 안에 있던 기존 피드를 꺼내서 맨 뒤로 보냄 (피드 영구 유실 방지)
         displaced = result.pop(pos)
         result.insert(pos, new_cand)
         result.append(displaced)
+        categories_snapshot[pos] = new_cand.candidate.wish_category
 
     return result
 
@@ -216,9 +258,10 @@ def apply_diversity_and_rules(
     with_recent = ensure_recent_completion_slot(
         diversified, scored, now, config.recent_hours_for_forced_slot, config.forced_slot_position
     )
-    with_role_models = ensure_role_model_in_top(
-        with_recent, scored, config.top_window, config.min_role_model_in_top
+    spaced = enforce_category_spacing(with_recent, config.max_consecutive_same_category)
+    final = ensure_role_model_in_top(
+        spaced, scored, config.top_window, config.min_role_model_in_top,
+        max_consecutive_same_category=config.max_consecutive_same_category,
     )
-    final = enforce_category_spacing(with_role_models, config.max_consecutive_same_category)
 
     return final[: config.final_size]
