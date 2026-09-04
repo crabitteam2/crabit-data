@@ -1,0 +1,35 @@
+name: Recap Service CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13.7"
+          cache: pip
+          cache-dependency-path: recap_service/runtime-requirements.txt
+      - name: Verify Python behavior and syntax
+        run: |
+          python -m unittest discover -s tests -v
+          python -m compileall monthly_batch.py monthly_recap.py recap_presenter.py recap_service weekly_batch.py weekly_recap.py tests
+      - name: Build and exercise the production image
+        run: |
+          image="crabit-recap:sha-${GITHUB_SHA:0:12}"
+          docker build --build-arg "VCS_REF=${GITHUB_SHA}" --tag "${image}" .
+          ./scripts/deployment/verify-image.sh "${image}" "${GITHUB_SHA}"
+          ./scripts/deployment/verify-runtime.sh "${image}"
+      - name: Verify delivery definitions
+        run: |
+          ./scripts/deployment/verify-workflow.sh
+          git diff --check

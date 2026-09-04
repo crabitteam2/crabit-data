@@ -2,7 +2,22 @@
 
 학생들의 "위시리스트(목표 저축)" 활동을 바탕으로 **주간 활동 요약**, **월말 리캡**을 자동 생성하고, 학생별로 관련성 높은 피드를 골라주는 **피드 추천 시스템**을 포함.
 
-백엔드 연동용 무상태 HTTP 서비스는 `CRABIT_RECAP_TOKEN=... python -m recap_service`로 실행합니다. 정식 내부 계약과 제한·오류·재시도 경계는 [`api/recap-generation-v1.yaml`](api/recap-generation-v1.yaml)에 있습니다. Spring은 스냅샷·생성 ID·재시도·저장을 소유하고 Python은 상태를 저장하지 않은 채 고정된 입력을 동기 계산합니다. 서비스가 바인딩되면 stdout에 `recap-service-ready` JSON 한 줄을 출력합니다. 교차 저장소 인수 테스트에서는 `CRABIT_RECAP_PORT=0`으로 OS가 고른 루프백 포트를 이 이벤트에서 읽거나 [`tests/real_service_harness.py`](tests/real_service_harness.py)의 컨텍스트 매니저를 재사용할 수 있습니다.
+백엔드 연동용 무상태 HTTP 서비스의 로컬 개발 서버는 `CRABIT_RECAP_TOKEN=... python -m recap_service`로 실행합니다. 운영에서는 digest로 고정한 이미지와 Gunicorn 엔트리포인트를 사용하며, 포트를 host에 publish하지 않고 backend 전용 private network에만 연결합니다. 이미지 빌드·환경 변수·검증·장애 경계는 [`docs/deployment/README.md`](docs/deployment/README.md)에 있습니다.
+
+정식 내부 계약과 제한·오류·재시도 경계는 [`api/recap-generation-v1.yaml`](api/recap-generation-v1.yaml)에 있습니다. Spring은 스냅샷·생성 ID·재시도·저장을 소유하고 Python은 상태를 저장하지 않은 채 고정된 입력을 동기 계산합니다. 개발 서버가 바인딩되면 stdout에 `recap-service-ready` JSON 한 줄을 출력합니다. 교차 저장소 인수 테스트에서는 `CRABIT_RECAP_PORT=0`으로 OS가 고른 루프백 포트를 이 이벤트에서 읽거나 [`tests/real_service_harness.py`](tests/real_service_harness.py)의 컨텍스트 매니저를 재사용할 수 있습니다.
+
+운영 이미지까지 포함한 저장소 검증은 다음 순서로 실행합니다.
+
+```bash
+python -m unittest discover -s tests -v
+python -m compileall monthly_batch.py monthly_recap.py recap_presenter.py recap_service weekly_batch.py weekly_recap.py tests
+image="crabit-recap:sha-$(git rev-parse --short=12 HEAD)"
+docker build --build-arg VCS_REF="$(git rev-parse HEAD)" --tag "${image}" .
+./scripts/deployment/verify-image.sh "${image}" "$(git rev-parse HEAD)"
+./scripts/deployment/verify-runtime.sh "${image}"
+./scripts/deployment/verify-workflow.sh
+git diff --check
+```
 
 `input_digest`는 `generation_id`와 `input_digest` 자체를 제외한 요청을 RFC 8785/JCS로 직렬화한 정확한 SHA-256입니다. 객체 삽입 순서 기반 JSON은 호환 입력으로 허용하지 않습니다. Java 생산자와 Python 검증기가 함께 사용할 숫자·Unicode 기준 벡터는 [`tests/fixtures/jcs-cross-language-vectors.jsonl`](tests/fixtures/jcs-cross-language-vectors.jsonl)에 있습니다.
 
