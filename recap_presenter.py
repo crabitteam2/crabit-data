@@ -121,7 +121,9 @@ def present_monthly_recap(raw_result: dict, is_active: bool = True) -> dict:
         # 3. 그룹 내 비교
         "group_comparison": {
             "habit_percentile": grp_sec.get("habit_percentile"),
+            "habit_percentile_status": grp_sec.get("habit_percentile_status"),
             "achievement_percentile": grp_sec.get("achievement_percentile"),
+            "achievement_percentile_status": grp_sec.get("achievement_percentile_status"),
             "message_habit": grp_sec.get("message_habit"),
             "message_achievement": grp_sec.get("message_achievement"),
         },

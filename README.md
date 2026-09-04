@@ -2,6 +2,10 @@
 
 학생들의 "위시리스트(목표 저축)" 활동을 바탕으로 **주간 활동 요약**, **월말 리캡**을 자동 생성하고, 학생별로 관련성 높은 피드를 골라주는 **피드 추천 시스템**을 포함.
 
+백엔드 연동용 무상태 HTTP 서비스는 `CRABIT_RECAP_TOKEN=... python -m recap_service`로 실행합니다. 정식 내부 계약과 제한·오류·재시도 경계는 [`api/recap-generation-v1.yaml`](api/recap-generation-v1.yaml)에 있습니다. Spring은 스냅샷·생성 ID·재시도·저장을 소유하고 Python은 상태를 저장하지 않은 채 고정된 입력을 동기 계산합니다. 서비스가 바인딩되면 stdout에 `recap-service-ready` JSON 한 줄을 출력합니다. 교차 저장소 인수 테스트에서는 `CRABIT_RECAP_PORT=0`으로 OS가 고른 루프백 포트를 이 이벤트에서 읽거나 [`tests/real_service_harness.py`](tests/real_service_harness.py)의 컨텍스트 매니저를 재사용할 수 있습니다.
+
+`input_digest`는 `generation_id`와 `input_digest` 자체를 제외한 요청을 RFC 8785/JCS로 직렬화한 정확한 SHA-256입니다. 객체 삽입 순서 기반 JSON은 호환 입력으로 허용하지 않습니다. Java 생산자와 Python 검증기가 함께 사용할 숫자·Unicode 기준 벡터는 [`tests/fixtures/jcs-cross-language-vectors.jsonl`](tests/fixtures/jcs-cross-language-vectors.jsonl)에 있습니다.
+
 ## 1. 한눈에 보는 구성
 
 ### 루트 (리캡)
