@@ -81,64 +81,81 @@ January/Seoul boundaries, deleted author activity, outgoing visits and the 52-we
 habit window also have database coverage. Separately, 60 backend contract and
 recommendation regression tests pass in three suites with no skips.
 
-The sequential backend full suite passed at HEAD
-`9aad883edde3d5fdd4c64a8ea54ceec54c7438b3`: 549 tests in 110 suites, with zero
-failures, errors or skips; bootJar also passed. Earlier overlapping Gradle runs
-failed result serialization and are superseded by this sequential result. The
-data suite passed 49 tests at HEAD `73daa30a6ff8630d513068d1ffc49eb9ca086328`.
-A subsequent focused backend integration run passed one test with no skips after
-adding repeated weekly/monthly owner-response equality and unchanged persisted
-generation/count checks. These results cover the existing snapshot and
-compatibility reservation path, not scheduled PREPARATION.
+The controller adopted backend develop base
+`5e468b2cd21cff20b56c0fde7920cd22baed5d1c` and data main base
+`ae65675f53d6d1538c744f30ddce2df46de75156`, producing backend HEAD
+`1fb57a7db0c0bd136a981d5bae65d3286a2b7e2b` and data HEAD
+`a3faf23732ef0d88b11b2708e0876530f40c44a4`. Base integration is complete.
 
-Controller-supported latest-base integration and renewed checks remain pending.
-The locally observed targets are backend develop
-`5e468b2cd21cff20b56c0fde7920cd22baed5d1c` and data main
-`ae65675f53d6d1538c744f30ddce2df46de75156`; these are recorded observations, not
-completed merges. Scheduled PREPARATION reservation, preparation claim/completion
-and generation require acceptance on the integrated trees. Existing-app browser
-acceptance also remains pending for weekly/monthly results, monthly ineligibility,
-failure states, repeated retrieval, nullable values and authorized story navigation.
-The requirement tables below retain the finer-grained acceptance checklist; the
-passing checks above do not establish every row as complete.
+The scheduled-path review rework at that backend HEAD reserves PREPARATION,
+claims preparation, builds the database snapshot with the reserved generation ID,
+completes preparation, claims generation, sends frozen bytes over actual HTTP,
+and records success. Duplicate scheduling before preparation and after success
+retains the generation. Repeated owner queries preserve complete responses and
+all stored generation fields. With this test/document rework applied, parity
+passed 11 tests in four suites and the sequential full backend suite passed 628
+tests in 123 suites; both had zero failures, errors or skips. Local logs are
+`/private/tmp/recap-scheduled-parity.log` and
+`/private/tmp/recap-scheduled-full.log`, with XML reports in the matching
+`recap-scheduled-parity-xml` and `recap-scheduled-full-xml` directories.
+These supersede historical pre-integration counts. The earlier data suite passed
+49 tests at HEAD `73daa30a6ff8630d513068d1ffc49eb9ca086328`; that historical
+receiver result is not a fresh test of this documentation-only update.
+
+Existing-app browser acceptance passed one Playwright test in 19.6 seconds on the
+integrated production trees using disposable PostgreSQL, the real receiver,
+backend and existing frontend. Real ledger facts and scheduled PREPARATION
+reservations produced the requests. It verified weekly and qualifying monthly
+rendering, repeated response equality and immutable stored inputs, nullable
+achievement presentation, story navigation, monthly ineligibility, failure UI
+when the receiver was stopped, and foreign-owner 404. A legal FOLLOWERS visibility
+change revoked unauthorized story access and its link while preserving stored
+successful views. This supersedes the earlier invalid PRIVATE fixture attempt.
+The script and passing log are under
+`/private/tmp/crabit-recap-preparation-browser/` (`recap-preparation.spec.mjs` and
+`run-final.log`). The controller repository retains the browser bundle and manifest
+under `workflows/publications/recap-algorithm-input-parity/validation/`, named
+`browser-1fb57a7-a3faf237.*`. This is local acceptance evidence, not deployed
+acceptance or release approval. The tables separate confirmed checks from finer
+grain scenarios still requiring explicit evidence.
 
 ## Q01–Q19 responsibility and evidence map
 
-| Requirement | Responsibility and evidence | Remaining integration evidence |
+| Requirement | Responsibility and evidence | Confirmed integration / remaining evidence |
 |---|---|---|
 | Q01 | Backend end-exclusive periods and period-end balances; receiver period validation and reference date | Delayed generation with later transactions |
 | Q02 | Backend IN_PROGRESS-only fallback; original monthly selector unchanged | Final database fallback regression |
 | Q03 | Backend snapshot representative/target; frozen request and receiver immutability tests | Change representative/target after successful storage |
-| Q04 | Existing monthly three-deposit and zero-week tests; backend effective deposit count | Actual qualifying monthly export and persistence |
+| Q04 | Existing monthly three-deposit and zero-week tests; backend effective deposit count | Confirmed: qualifying monthly database export, HTTP generation, persistence and browser rendering |
 | Q05 | Empty receiver input succeeds; transport failures have error responses | Database failure distinguished from empty query |
 | Q06 | Original net/average functions; signed oracle cases | Ledger return/transfer facts through snapshot |
-| Q07 | Backend parent-chain folding; receiver consumes effective rows unchanged | Cross-month cancellation and chain tests |
+| Q07 | Backend parent-chain folding; receiver consumes effective rows unchanged | Confirmed: backdated/cross-month cancellation and stable root identity; remaining: other chain variants |
 | Q08 | Original pattern-analysis function; distinct-date oracle deviation | Mean-gap message example through final monthly snapshot |
 | Q09 | Original weekly/monthly grouping functions unchanged | Fixed month with differing Monday/date-week boundaries |
-| Q10 | Original streak function unchanged; backend full history input | 53-week and exact boundary snapshot |
+| Q10 | Original streak function unchanged; backend full history input | Confirmed: exact 52-week habit cutoff with Seoul inclusive/exclusive boundaries; remaining: explicit 53-week example |
 | Q11 | Backend includes deleted Wish history; original filters unchanged | Deleted creation/completion/abandonment snapshots |
-| Q12 | Backend age/account/academy cohort construction | Age boundaries and representative-less peer fixture |
+| Q12 | Backend age/account/academy cohort construction | Confirmed: age provenance, synthetic-age exclusion and representative-less peer fixture; remaining: exact age boundaries |
 | Q13 | Existing monthly no-peers tests; original comparison unchanged | All-tied/partial-tie final backend cohort |
-| Q14 | Shared original visit presenter tested against raw visits; outgoing metric classifier oracle | Actual behavior actor/target mapping |
-| Q15 | Backend visible-before-first-five, stable order; shared page-three summary | Completion/update boundaries and frozen retry order |
-| Q16 | Complete aggregate original classifier oracle | Author other-Wish activity and January rollover database facts |
+| Q14 | Shared original visit presenter tested against raw visits; outgoing metric classifier oracle | Confirmed: outgoing author-visit actor/account mapping; remaining: full received-visit direction fixture |
+| Q15 | Backend visible-before-first-five, stable order; shared page-three summary | Confirmed: visibility-before-limit, completion-month selection and immutable repeated retrieval; remaining: exact update-boundary example |
+| Q16 | Complete aggregate original classifier oracle | Confirmed: account-wide author activity, deleted Wishes and January/December Seoul rollover |
 | Q17 | Original representative pace function unchanged | Other-Wish-only savings and mid-month creation snapshots |
 | Q18 | Original fractional-day operation unchanged | Preserve exact September 2 oracle in integration |
 | Q19 | Original nonpositive-pace early return unchanged | Reached target with zero pace snapshot |
 
 ## T01–T24 acceptance tracking
 
-| Cases | Receiver evidence | Integration work still required |
+| Cases | Receiver evidence | Confirmed integration / remaining evidence |
 |---|---|---|
-| T01–T03 | Effective transaction contract; no correction reinterpretation | Cancellation, corrected amount and cross-month chains |
-| T04 | Zero weekly and three-deposit monthly unit tests | Qualifying backend snapshot export and persisted result |
+| T01–T03 | Effective transaction contract; no correction reinterpretation | Confirmed: backdated/cross-month cancellation and stable roots; remaining: additional corrected-amount/chain fixtures |
+| T04 | Zero weekly and three-deposit monthly unit tests | Confirmed: qualifying monthly export, HTTP result, stored read-back and browser rendering |
 | T05–T06 | Original net/average/classifier with signed oracle | Returns, transfer pairs and deleted history from ledger |
-| T07–T08 | Frozen-input immutability/digest tests | Delayed generation, representative changes and repeat stored reads |
+| T07–T08 | Frozen-input immutability/digest tests | Confirmed: repeated weekly/monthly owner responses and immutable stored generation fields; remaining: later representative/target changes and delayed generation |
 | T09–T12 | Original pace function preserved; nonpositive pace regression | Representative-specific pace, mid-month days, fractional-day and early-return fixtures |
-| T13–T14 | Distinct-day deviation oracle; original grouping/streak unchanged | Average-gap message, month week boundaries, 53-week database input |
-| T15–T16 | Existing no-peers nullable response | Exact cohort eligibility and tie/rank boundaries |
-| T17 | Raw received-visit presentation parity; outgoing count classifier | Actual behavior-event identity/direction mapping |
-| T18–T20 | Bounded closed candidates, all four author types, no raw author fields | Visibility/order, previous-month/year rollover and >100-Wish account facts |
-| T21 | HTTP auth/schema/idempotency/digest failure tests | DB failures, timeouts and mismatched persisted responses |
-| T22 | Deterministic identical HTTP retry output | Durable concurrent reservations and conflicting result rejection |
-| T23–T24 | Receiver does not mutate stored state | Owner-only retrieval and current story privacy after deletion/private/block |
+| T13–T14 | Distinct-day deviation oracle; original grouping/streak unchanged | Confirmed: exact 52-week habit cutoff; remaining: average-gap message, month week boundaries and explicit 53-week example |
+| T15–T16 | Existing no-peers nullable response | Confirmed: age provenance, synthetic-age exclusion, representative-less peers and nullable browser presentation; remaining: exact age and tie/rank boundaries |
+| T17 | Raw received-visit presentation parity; outgoing count classifier | Confirmed: outgoing author visit student/account mapping; remaining: received-visit direction fixture |
+| T18–T20 | Bounded closed candidates, all four author types, no raw author fields | Confirmed: visibility-before-limit, previous completion month, January/December rollover and deleted account activity; remaining: explicit >100-Wish fixture |
+| T21 | HTTP auth/schema/idempotency/digest failure tests | Confirmed: real stopped-receiver failure UI and existing response-identity checks; remaining: explicit DB-failure and timeout evidence |
+| T22 | Deterministic identical HTTP retry output | Confirmed: scheduled reserve/prepare/claim/success and duplicate reservation before preparation/after success; remaining: explicit concurrent-reservation and conflicting-result cases |
+| T23–T24 | Receiver does not mutate stored state | Confirmed: owner retrieval, foreign-owner 404 and FOLLOWERS revocation preserving stored views; remaining: deletion/block-specific browser cases (PRIVATE is not a legal shared-card fixture) |
