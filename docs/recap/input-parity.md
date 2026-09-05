@@ -81,9 +81,24 @@ January/Seoul boundaries, deleted author activity, outgoing visits and the 52-we
 habit window also have database coverage. Separately, 60 backend contract and
 recommendation regression tests pass in three suites with no skips.
 
-The backend full-suite result remains pending: overlapping Gradle runs failed
-result serialization, so those runs are not passing evidence. A sequential full
-rerun and frontend/browser verification remain integration-gate requirements.
+The sequential backend full suite passed at HEAD
+`9aad883edde3d5fdd4c64a8ea54ceec54c7438b3`: 549 tests in 110 suites, with zero
+failures, errors or skips; bootJar also passed. Earlier overlapping Gradle runs
+failed result serialization and are superseded by this sequential result. The
+data suite passed 49 tests at HEAD `73daa30a6ff8630d513068d1ffc49eb9ca086328`.
+A subsequent focused backend integration run passed one test with no skips after
+adding repeated weekly/monthly owner-response equality and unchanged persisted
+generation/count checks. These results cover the existing snapshot and
+compatibility reservation path, not scheduled PREPARATION.
+
+Controller-supported latest-base integration and renewed checks remain pending.
+The locally observed targets are backend develop
+`5e468b2cd21cff20b56c0fde7920cd22baed5d1c` and data main
+`ae65675f53d6d1538c744f30ddce2df46de75156`; these are recorded observations, not
+completed merges. Scheduled PREPARATION reservation, preparation claim/completion
+and generation require acceptance on the integrated trees. Existing-app browser
+acceptance also remains pending for weekly/monthly results, monthly ineligibility,
+failure states, repeated retrieval, nullable values and authorized story navigation.
 The requirement tables below retain the finer-grained acceptance checklist; the
 passing checks above do not establish every row as complete.
 
