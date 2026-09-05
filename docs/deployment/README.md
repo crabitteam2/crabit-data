@@ -2,8 +2,10 @@
 
 이 디렉터리는 이미 확정된 `POST /internal/v1/recap-generations` 계약과 계산 로직을 바꾸지 않고
 Python 서비스를 Staging과 Stable Demo의 private runtime에 배치하는 방법을 설명한다. Core production
-연결, registry publication, provider secret 생성·회전, VM rollout, DNS, TLS, merge와 release는 이
-저장소 변경의 범위가 아니다.
+연결, provider secret 생성·회전, VM rollout, DNS, TLS, merge와 release는 이 저장소 변경의 범위가
+아니다. 이 저장소가 제공하는 publication workflow와 script는 immutable recap image를 만들고 Docker
+Hub에서 그 identity를 다시 읽는 데까지만 책임진다. Workflow 실행과 registry write 자체는 별도
+controller-bound action이 필요하다.
 
 ## Image identity and contents
 
@@ -30,6 +32,53 @@ docker build --build-arg "VCS_REF=${revision}" --tag "${image}" .
 배포와 rollback에는 mutable tag가 아니라 registry가 read-back한 fully qualified digest
 `crabitteam2/crabit-data@sha256:<64 hex>`를 사용한다. Backend image digest와 recap image digest는 하나의
 release pair로 함께 검증·승격·복구한다.
+
+## Immutable image publication
+
+`Publish Recap Image` (`.github/workflows/publish-recap-image.yml`)는 `workflow_dispatch`로만 실행하며
+dispatch ref가 `main`이 아니면 실패한다. Checkout, unit/contract tests, compile, image build,
+`verify-image.sh`, `verify-runtime.sh`, 정적 workflow 검증은 모두 event의 정확한 40자리 `GITHUB_SHA`를
+대상으로 수행한다. Test를 마친 뒤에만 `dockerhub` environment의 `DOCKERHUB_USERNAME`과
+`DOCKERHUB_TOKEN`으로 로그인한다. Credential 값은 파일, image, output 또는 summary에 기록하지 않는다.
+
+Publication은 `crabitteam2/crabit-data:sha-<commit12>` 하나만 취급하고 `latest`, branch tag 또는 다른
+mutable selector를 만들지 않는다. `publish-image.sh`는 BuildKit metadata의 tested config digest와 local
+image identity를 먼저 고정한 뒤 다음처럼 fail closed한다.
+
+- Tag 조회가 명시적인 `manifest unknown`이면 exact local image를 한 번 push한다.
+- 인증 실패, timeout, 연결 오류 등 다른 조회 실패는 tag 부재로 해석하지 않으며 push하지 않는다.
+- Tag가 이미 있으면 덮어쓰지 않고 그 tag를 한 번 resolve한 immutable digest만 검사한다.
+- Push 실패는 부분 성공일 수 있으므로 같은 실행에서 재시도하지 않는다. 다음 controller action은 registry
+  read-back으로 동일 image를 안전하게 채택할 수 있는지 먼저 확인해야 한다.
+- 채택과 새 publication 모두 digest reference를 pull하고 single-platform `linux/amd64` manifest인지,
+  manifest config digest가 tested config digest와 같은지, OCI revision이 dispatch된 전체 commit SHA와
+  같은지, local `RepoDigests`에 그 immutable reference가 있는지 확인한다.
+
+성공한 job output과 step summary에는 `image_digest`, fully qualified `image_reference`, `image_tag`,
+`image_architecture`, `image_config_digest`, 전체 `image_revision`, `publication_result` (`published` 또는
+`adopted`)가 남는다. 이 read-back이 Staging에서 선택할 수 있는 recap image evidence이며 workflow 성공
+문구나 tag 존재만으로 digest identity를 추정하면 안 된다.
+
+## Staging to Stable Demo rollout
+
+Image publication 뒤의 provider 변경과 rollout은 이 repository workflow가 수행하지 않는다. 순서는 다음
+경계를 유지한다.
+
+1. Exact controller-bound provider action으로 `dockerhub` environment credential 이름과 protection을
+   확인하거나 구성한다. Secret 값은 repository나 specialist evidence에 넣지 않는다.
+2. Publication output의 digest, config digest, `linux/amd64`, 전체 crabit-data `main` revision을
+   authoritative registry/workflow read-back으로 다시 확인한다.
+3. Staging과 Stable Demo에 서로 다른 nonempty `CRABIT_RECAP_GENERATION_CREDENTIAL`과 required reviewer를
+   controller-bound action으로 구성한다. Stable Demo의 `CRABIT_RECAP_IMAGE_DIGEST`는 아직 설정하지 않는다.
+4. 기존 crabit-backend `Deploy Staging` workflow에 검증된 backend digest와 recap digest를 전달한다. 성공
+   conclusion만 보지 말고 VM의 두 running `Config.Image`/`RepoDigest`, private recap isolation, public HTTPS,
+   authenticated generation, database persistence와 owner retrieval, failure isolation, snapshot과 rollback
+   readiness를 읽는다.
+5. Staging evidence가 완전한 뒤 explicit promotion approval에서 멈춘다. 승인 후에만 같은 recap digest를
+   Stable Demo 변수로 설정하고 exact backend release를 main으로 승격한다.
+6. Stable Demo에서도 environment approval, registry identity, VM release pair, HTTPS, generation/storage/
+   retrieval과 rollback 상태를 authoritative read-back한다. Core production activation은 이 절차에 포함되지
+   않는다.
 
 ## Runtime boundary
 
@@ -79,7 +128,7 @@ probe는 추가하지 않는다.
 ```
 
 `recap-service-ci.yml`은 pull request와 수동 실행에서 unit/contract tests, compile, image build, image/runtime
-검증과 정적 workflow 검증만 수행한다. Image push, cloud authentication, deploy 또는 live secret write는
-하지 않는다. 실제 backend-to-Python generation, durable storage, owner-only retrieval, restart persistence,
-failure isolation과 release-pair rollback은 sibling `crabit-backend`의 two-image runtime verifier에서 두 local
-image를 함께 실행해 증명한다.
+검증과 정적 workflow 검증만 수행하며 image를 push하지 않는다. `publish-recap-image.yml`도 cloud deploy,
+live secret write 또는 application rollout을 수행하지 않는다. 실제 backend-to-Python generation, durable
+storage, owner-only retrieval, restart persistence, failure isolation과 release-pair rollback은 sibling
+`crabit-backend`의 two-image runtime verifier와 Staging authoritative read-back으로 증명한다.
