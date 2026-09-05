@@ -6,3 +6,5 @@ __pycache__/
 *.json
 *.md
 !README.md
+!docs/recap/input-parity.md
+!tests/fixtures/recap-input-parity/*.json

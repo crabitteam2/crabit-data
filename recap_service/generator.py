@@ -12,9 +12,11 @@ from monthly_recap import (
     compute_group_comparison, compute_objective_performance, compute_pace_prediction,
     compute_pattern_analysis, get_representative_wish,
 )
+from .author_metrics import author_type_title
 from recap_presenter import present_monthly_recap, present_weekly_recap
 from weekly_recap import (
     build_streak_section, build_weekly_achievement_section,
+    build_page2_from_aggregates, build_page3_from_aggregates,
     compute_representative_milestone, compute_streak_weeks,
     compute_weekly_achievement,
 )
@@ -75,11 +77,8 @@ def _weekly(request: dict[str, Any], wishes: list[Wish], txs: list[SavingsTransa
     achievement = compute_weekly_achievement(account, week_start, week_end, wishes, txs)
     milestone = compute_representative_milestone(account, week_start, week_end, wishes, txs, week_end)
     visits = request["input"]["visit_metrics"]
-    total = visits["received_visit_count"]
-    previous = visits["previous_week_received_visit_count"]
-    growth = round((total - previous) / previous * 100) if previous else None
     stories = [
-        {"wish_id": item["wish_id"], "type_title": item["type_title"]}
+        {"wish_id": item["wish_id"], "type_title": author_type_title(item)}
         for item in request["input"]["success_story_candidates"]
     ]
     raw = {
@@ -91,18 +90,11 @@ def _weekly(request: dict[str, Any], wishes: list[Wish], txs: list[SavingsTransa
             "representative_milestone": milestone,
             "streak": build_streak_section(compute_streak_weeks(account, week_start, week_end, txs)),
         },
-        "page2_growth_report": {
-            "total_visits": total,
-            "unique_visitors": visits["unique_received_visitor_count"],
-            "prev_total_visits": previous,
-            "growth_pct": growth,
-            "message_visits": f"지난주 내 프로필을 {total}번 방문했어요." if total else "지난주 프로필 방문은 없었어요.",
-            "message_growth": f"전주보다 방문이 {growth}% 변했어요." if growth is not None else None,
-        },
-        "page3_academy_success_stories": {
-            "stories": stories,
-            "message_summary": f"우리 학원 친구 {len(stories)}명이 목표를 이뤘어요!" if stories else "지난주엔 아직 완주한 학원 친구가 없어요. 이번 주 첫 주인공이 되어볼까요?",
-        },
+        "page2_growth_report": build_page2_from_aggregates(
+            visits["received_visit_count"], visits["unique_received_visitor_count"],
+            visits["previous_week_received_visit_count"],
+        ),
+        "page3_academy_success_stories": build_page3_from_aggregates(stories),
     }
     return present_weekly_recap(raw)
 

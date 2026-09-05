@@ -1,0 +1,59 @@
+{
+  "source_revision": "4738d32e179e06c232d5dea048c143a27b534a92",
+  "scope": "pure original functions vs current adapter; no HTTP/DB",
+  "cases": [
+    {
+      "total": 0,
+      "previous": 0,
+      "unique": 0,
+      "original": {
+        "message_visits": "지난주엔 내 위시리스트를 방문한 친구가 없었어요.",
+        "message_growth": null
+      },
+      "adapter": {
+        "message_visits": "지난주 프로필 방문은 없었어요.",
+        "message_growth": null
+      }
+    },
+    {
+      "total": 3,
+      "previous": 1,
+      "unique": 1,
+      "original": {
+        "message_visits": "내 위시리스트를 지난주 1명이 3번 방문했어요.",
+        "message_growth": "지난주보다 내 위시리스트 인기가 200% 더 올라갔어요!"
+      },
+      "adapter": {
+        "message_visits": "지난주 내 프로필을 3번 방문했어요.",
+        "message_growth": "전주보다 방문이 200% 변했어요."
+      }
+    },
+    {
+      "total": 1,
+      "previous": 3,
+      "unique": 1,
+      "original": {
+        "message_visits": "내 위시리스트를 지난주 1명이 1번 방문했어요.",
+        "message_growth": "지난주보다 방문이 67% 줄었어요."
+      },
+      "adapter": {
+        "message_visits": "지난주 내 프로필을 1번 방문했어요.",
+        "message_growth": "전주보다 방문이 -67% 변했어요."
+      }
+    },
+    {
+      "total": 2,
+      "previous": 2,
+      "unique": 2,
+      "original": {
+        "message_visits": "내 위시리스트를 지난주 2명이 2번 방문했어요.",
+        "message_growth": "지난주와 비슷한 수준의 방문을 유지했어요."
+      },
+      "adapter": {
+        "message_visits": "지난주 내 프로필을 2번 방문했어요.",
+        "message_growth": "전주보다 방문이 0% 변했어요."
+      }
+    }
+  ],
+  "adapter_observation": "Historical pre-fix adapter output, retained only for audit; tests expect original messages."
+}

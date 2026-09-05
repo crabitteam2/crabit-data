@@ -102,7 +102,8 @@ def _integer(value: Any, path: str) -> int:
 
 
 def _number(value: Any, path: str) -> float:
-    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0:
+    _finite_signed(value, path)
+    if value < 0:
         raise InvalidRecapInput(f"{path} must be a finite nonnegative number.", [path])
     return float(value)
 
@@ -193,11 +194,45 @@ def _validate_input(value: Any) -> None:
         story = _closed(raw, STORY_FIELDS, path)
         _uuid(story["wish_id"], path + ".wish_id")
         _string(story["type_title"], path + ".type_title", 100)
-        metrics = story["author_previous_month"]
-        if not isinstance(metrics, dict) or not metrics or metrics.keys() - AUTHOR_METRIC_FIELDS:
-            raise InvalidRecapInput("Author metrics must be a closed aggregate object.", [path + ".author_previous_month"])
+        _validate_author_metrics(story["author_previous_month"], path + ".author_previous_month")
+
+
+def _finite_signed(value: Any, path: str) -> None:
+    try:
+        valid = not isinstance(value, bool) and isinstance(value, (int, float)) and math.isfinite(value)
+    except OverflowError:
+        valid = False
+    if not valid:
+        raise InvalidRecapInput(f"{path} must be a finite number.", [path])
+
+
+def _validate_author_metrics(metrics: Any, path: str) -> None:
+    if not isinstance(metrics, dict):
+        raise InvalidRecapInput("Author metrics must be an object.", [path])
+    counts = {"deposit_count", "abandon_count", "transfer_count", "visit_count"}
+    if "metrics_version" not in metrics:
+        # Frozen schema-valid legacy partial inputs keep their supplied type title.
+        if not metrics or metrics.keys() - AUTHOR_METRIC_FIELDS:
+            raise InvalidRecapInput("Author metrics must be a closed aggregate object.", [path])
         for name, item in metrics.items():
-            _number(item, path + ".author_previous_month." + name)
+            (_integer if name in counts else _number)(item, path + "." + name)
+        return
+    _closed(metrics, AUTHOR_METRIC_FIELDS | {"metrics_version", "total_savings"}, path)
+    if metrics["metrics_version"] != "core-metrics-v1":
+        raise InvalidRecapInput("Unknown author metrics version.", [path + ".metrics_version"])
+    for name in counts:
+        _integer(metrics[name], path + "." + name)
+    total = metrics["total_savings"]
+    if isinstance(total, bool) or not isinstance(total, int) or not -MAX_SAFE_INTEGER <= total <= MAX_SAFE_INTEGER:
+        raise InvalidRecapInput("Author total must be a signed safe integer.", [path + ".total_savings"])
+    _finite_signed(metrics["avg_amount"], path + ".avg_amount")
+    if metrics["regularity_std"] is not None:
+        _finite_signed(metrics["regularity_std"], path + ".regularity_std")
+        if metrics["regularity_std"] < 0:
+            raise InvalidRecapInput("Regularity must be nonnegative or null.", [path + ".regularity_std"])
+    if metrics["pace_bias"] is not None:
+        _finite_signed(metrics["pace_bias"], path + ".pace_bias")
+
 
 
 def validate_request(request: dict[str, Any], idempotency_key: str | None) -> dict[str, Any]:
