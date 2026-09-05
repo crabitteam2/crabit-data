@@ -1,0 +1,13 @@
+*
+!.dockerignore
+!Dockerfile
+!gunicorn.conf.py
+!monthly_recap.py
+!recap_presenter.py
+!weekly_recap.py
+!api/
+!api/recap-generation-v1.yaml
+!recap_service/
+!recap_service/**
+**/__pycache__/
+**/*.py[cod]
