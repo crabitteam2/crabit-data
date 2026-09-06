@@ -288,10 +288,11 @@ def build_page2(
     prev_week_start, prev_week_end = _shift_week(last_week_start, last_week_end, weeks=-1)
     prev_week = compute_profile_visit_stats(account_id, prev_week_start, prev_week_end, visits)
 
-    total_visits = this_week["total_visits"]
-    unique_visitors = this_week["unique_visitors"]
-    prev_total_visits = prev_week["total_visits"]
+    return build_page2_from_aggregates(this_week["total_visits"], this_week["unique_visitors"], prev_week["total_visits"])
 
+
+def build_page2_from_aggregates(total_visits: int, unique_visitors: int, prev_total_visits: int) -> dict:
+    """Present the original visit messages without needing private visitor identities."""
     if prev_total_visits > 0:
         growth_pct = round((total_visits - prev_total_visits) / prev_total_visits * 100)
     else:
@@ -404,6 +405,11 @@ def compute_academy_success_stories(
 
 
 def build_page3(stories: Sequence[SuccessStory]) -> dict:
+    return build_page3_from_aggregates([{"wish_id": s.wish_id, "type_title": s.type_title} for s in stories])
+
+
+def build_page3_from_aggregates(stories: Sequence[dict]) -> dict:
+    """Present the same story summary for privacy-reduced story aggregates."""
     if not stories:
         return {
             "stories": [],
@@ -414,7 +420,7 @@ def build_page3(stories: Sequence[SuccessStory]) -> dict:
 
     return {
         # wish_id와, 그 학생의 유형 타이틀(완료 달의 이전 달 기준)을 함께 전달
-        "stories": [{"wish_id": s.wish_id, "type_title": s.type_title} for s in stories],
+        "stories": list(stories),
         "message_summary": summary,
     }
 

@@ -1,0 +1,418 @@
+{
+  "source_data_revision": "4738d32e179e06c232d5dea048c143a27b534a92",
+  "scope": "original pure function oracle over synthetic raw facts; no HTTP/DB",
+  "cases": [
+    {
+      "case": "bulldozer_priority",
+      "deposits_day_amount": [
+        [
+          1,
+          1000
+        ],
+        [
+          5,
+          1000
+        ],
+        [
+          9,
+          1000
+        ],
+        [
+          13,
+          1000
+        ],
+        [
+          17,
+          1000
+        ],
+        [
+          21,
+          1000
+        ],
+        [
+          25,
+          1000
+        ],
+        [
+          29,
+          1000
+        ]
+      ],
+      "withdrawals_day_amount": [],
+      "outgoing_visits": 15,
+      "deleted_abandoned_wishes": 0,
+      "metrics": {
+        "save_count": 8,
+        "total_savings": 8000,
+        "avg_amount": 1000.0,
+        "regularity_std": 0.0,
+        "pace_bias": 0.0,
+        "abandon_count": 0,
+        "transfer_count": 0,
+        "visit_count": 15
+      },
+      "classification": {
+        "type_title": "불도저형 토끼",
+        "priority_matched": 1,
+        "is_fallback": false,
+        "message": "월 8회 이상의 높은 빈도로 흔들림 없이 목표를 향해 거침없이 질주했어요!"
+      }
+    },
+    {
+      "case": "steady",
+      "deposits_day_amount": [
+        [
+          1,
+          1000
+        ],
+        [
+          8,
+          1000
+        ],
+        [
+          15,
+          1000
+        ],
+        [
+          22,
+          1000
+        ],
+        [
+          29,
+          1000
+        ]
+      ],
+      "withdrawals_day_amount": [],
+      "outgoing_visits": 0,
+      "deleted_abandoned_wishes": 0,
+      "metrics": {
+        "save_count": 5,
+        "total_savings": 5000,
+        "avg_amount": 1000.0,
+        "regularity_std": 0.0,
+        "pace_bias": -0.2,
+        "abandon_count": 0,
+        "transfer_count": 0,
+        "visit_count": 0
+      },
+      "classification": {
+        "type_title": "꾸준형 토끼",
+        "priority_matched": 2,
+        "is_fallback": false,
+        "message": "소액이라도 5회 이상 꾸준히 모으며 티끌 모아 태산의 정석을 보여줬어요!"
+      }
+    },
+    {
+      "case": "sprint",
+      "deposits_day_amount": [
+        [
+          20,
+          10000
+        ],
+        [
+          25,
+          10000
+        ],
+        [
+          30,
+          10000
+        ]
+      ],
+      "withdrawals_day_amount": [],
+      "outgoing_visits": 0,
+      "deleted_abandoned_wishes": 0,
+      "metrics": {
+        "save_count": 3,
+        "total_savings": 30000,
+        "avg_amount": 10000.0,
+        "regularity_std": 0.0,
+        "pace_bias": 1.0,
+        "abandon_count": 0,
+        "transfer_count": 0,
+        "visit_count": 0
+      },
+      "classification": {
+        "type_title": "단기 집중형 토끼",
+        "priority_matched": 3,
+        "is_fallback": false,
+        "message": "월말 막판 스퍼트로 집중 저축하며 강력한 뒷심을 발휘했어요!"
+      }
+    },
+    {
+      "case": "explorer_visits",
+      "deposits_day_amount": [
+        [
+          1,
+          10000
+        ],
+        [
+          8,
+          10000
+        ],
+        [
+          15,
+          10000
+        ]
+      ],
+      "withdrawals_day_amount": [],
+      "outgoing_visits": 15,
+      "deleted_abandoned_wishes": 0,
+      "metrics": {
+        "save_count": 3,
+        "total_savings": 30000,
+        "avg_amount": 10000.0,
+        "regularity_std": 0.0,
+        "pace_bias": -1.0,
+        "abandon_count": 0,
+        "transfer_count": 0,
+        "visit_count": 15
+      },
+      "classification": {
+        "type_title": "탐색형 토끼",
+        "priority_matched": 4,
+        "is_fallback": false,
+        "message": "이번 달 위시를 변경하거나 저축액을 옮겨 담고, 친구들 프로필도 자주 구경하며 나에게 맞는 목표를 활발히 탐색했어요!"
+      }
+    },
+    {
+      "case": "explorer_abandons",
+      "deposits_day_amount": [],
+      "withdrawals_day_amount": [],
+      "outgoing_visits": 0,
+      "deleted_abandoned_wishes": 2,
+      "metrics": {
+        "save_count": 0,
+        "total_savings": 0,
+        "avg_amount": 0.0,
+        "regularity_std": null,
+        "pace_bias": null,
+        "abandon_count": 2,
+        "transfer_count": 0,
+        "visit_count": 0
+      },
+      "classification": {
+        "type_title": "탐색형 토끼",
+        "priority_matched": 4,
+        "is_fallback": false,
+        "message": "이번 달 위시를 변경하거나 저축액을 옮겨 담고, 친구들 프로필도 자주 구경하며 나에게 맞는 목표를 활발히 탐색했어요!"
+      }
+    },
+    {
+      "case": "fallback",
+      "deposits_day_amount": [
+        [
+          1,
+          10000
+        ],
+        [
+          8,
+          10000
+        ],
+        [
+          15,
+          10000
+        ]
+      ],
+      "withdrawals_day_amount": [],
+      "outgoing_visits": 0,
+      "deleted_abandoned_wishes": 0,
+      "metrics": {
+        "save_count": 3,
+        "total_savings": 30000,
+        "avg_amount": 10000.0,
+        "regularity_std": 0.0,
+        "pace_bias": -1.0,
+        "abandon_count": 0,
+        "transfer_count": 0,
+        "visit_count": 0
+      },
+      "classification": {
+        "type_title": "탐색형 토끼",
+        "priority_matched": 4,
+        "is_fallback": true,
+        "message": "이번 달은 나만의 속도로 위시를 살펴봤어요."
+      }
+    },
+    {
+      "case": "same_day_no_std",
+      "deposits_day_amount": [
+        [
+          1,
+          3000
+        ],
+        [
+          1,
+          3000
+        ],
+        [
+          1,
+          3000
+        ],
+        [
+          1,
+          3000
+        ],
+        [
+          1,
+          3000
+        ],
+        [
+          1,
+          3000
+        ],
+        [
+          1,
+          3000
+        ],
+        [
+          1,
+          3000
+        ]
+      ],
+      "withdrawals_day_amount": [],
+      "outgoing_visits": 0,
+      "deleted_abandoned_wishes": 0,
+      "metrics": {
+        "save_count": 8,
+        "total_savings": 24000,
+        "avg_amount": 3000.0,
+        "regularity_std": null,
+        "pace_bias": -1.0,
+        "abandon_count": 0,
+        "transfer_count": 0,
+        "visit_count": 0
+      },
+      "classification": {
+        "type_title": "탐색형 토끼",
+        "priority_matched": 4,
+        "is_fallback": true,
+        "message": "이번 달은 나만의 속도로 위시를 살펴봤어요."
+      }
+    },
+    {
+      "case": "negative_average",
+      "deposits_day_amount": [
+        [
+          1,
+          1000
+        ]
+      ],
+      "withdrawals_day_amount": [
+        [
+          20,
+          3000
+        ]
+      ],
+      "outgoing_visits": 0,
+      "deleted_abandoned_wishes": 0,
+      "metrics": {
+        "save_count": 1,
+        "total_savings": -2000,
+        "avg_amount": -2000.0,
+        "regularity_std": null,
+        "pace_bias": null,
+        "abandon_count": 0,
+        "transfer_count": 0,
+        "visit_count": 0
+      },
+      "classification": {
+        "type_title": "탐색형 토끼",
+        "priority_matched": 4,
+        "is_fallback": true,
+        "message": "이번 달은 나만의 속도로 위시를 살펴봤어요."
+      }
+    },
+    {
+      "case": "pace_negative",
+      "deposits_day_amount": [
+        [
+          1,
+          10000
+        ],
+        [
+          5,
+          10000
+        ],
+        [
+          25,
+          1000
+        ]
+      ],
+      "withdrawals_day_amount": [],
+      "outgoing_visits": 0,
+      "deleted_abandoned_wishes": 0,
+      "metrics": {
+        "save_count": 3,
+        "total_savings": 21000,
+        "avg_amount": 7000.0,
+        "regularity_std": 8.0,
+        "pace_bias": -0.9047619047619048,
+        "abandon_count": 0,
+        "transfer_count": 0,
+        "visit_count": 0
+      },
+      "classification": {
+        "type_title": "탐색형 토끼",
+        "priority_matched": 4,
+        "is_fallback": true,
+        "message": "이번 달은 나만의 속도로 위시를 살펴봤어요."
+      }
+    },
+    {
+      "case": "pace_above_one",
+      "deposits_day_amount": [
+        [
+          25,
+          10000
+        ]
+      ],
+      "withdrawals_day_amount": [
+        [
+          5,
+          2000
+        ]
+      ],
+      "outgoing_visits": 0,
+      "deleted_abandoned_wishes": 0,
+      "metrics": {
+        "save_count": 1,
+        "total_savings": 8000,
+        "avg_amount": 8000.0,
+        "regularity_std": null,
+        "pace_bias": 1.5,
+        "abandon_count": 0,
+        "transfer_count": 0,
+        "visit_count": 0
+      },
+      "classification": {
+        "type_title": "단기 집중형 토끼",
+        "priority_matched": 3,
+        "is_fallback": false,
+        "message": "월말 막판 스퍼트로 집중 저축하며 강력한 뒷심을 발휘했어요!"
+      }
+    },
+    {
+      "case": "empty",
+      "deposits_day_amount": [],
+      "withdrawals_day_amount": [],
+      "outgoing_visits": 0,
+      "deleted_abandoned_wishes": 0,
+      "metrics": {
+        "save_count": 0,
+        "total_savings": 0,
+        "avg_amount": 0.0,
+        "regularity_std": null,
+        "pace_bias": null,
+        "abandon_count": 0,
+        "transfer_count": 0,
+        "visit_count": 0
+      },
+      "classification": {
+        "type_title": "탐색형 토끼",
+        "priority_matched": 4,
+        "is_fallback": true,
+        "message": "이번 달은 나만의 속도로 위시를 살펴봤어요."
+      }
+    }
+  ]
+}

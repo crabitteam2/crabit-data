@@ -5,7 +5,7 @@ readonly ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 readonly CI_WORKFLOW="${ROOT}/.github/workflows/recap-service-ci.yml"
 readonly PUBLICATION_WORKFLOW="${ROOT}/.github/workflows/publish-recap-image.yml"
 readonly PUBLISH_SCRIPT="${ROOT}/scripts/deployment/publish-image.sh"
-readonly CONTRACT_SHA256="5b5afa7662e84c6809f167827125dd38a82b47fa437a2a8c9ba73c039ae083a5"
+readonly CONTRACT_SHA256="ec93e480994203a6c8a62d5b9e9992627fba9b71ef346640ea7b80c38f62d233"
 readonly TRANSPORT_SHA256="7772daae35b7b480328fc68e1df826575882c0d2f86cf49a3c05e24a26927457"
 readonly DEVELOPMENT_ENTRYPOINT_SHA256="8ac3e4b10ce176fe342b49c6883850e380a2f60fdd828f3458eb41da6db93a6c"
 

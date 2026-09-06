@@ -194,3 +194,7 @@ python feed/feed_recommend.py # feed_recommendations_aca1.json 생성
 - `monthly_batch.py`, `weekly_batch.py`, `feed_recommend.py`의 데이터 로딩 부분은 지금은 `data/` CSV를 읽도록 되어 있지만, 실제 서비스에서는 이 부분만 사용 중인 DB 조회 로직으로 교체하면 됩니다.
 - `academy_id`, `academy_name`, `year`/`month`, `reference_date` 등은 각 실행 스크립트의 `if __name__ == "__main__":` 블록에서 하드코딩되어 있으니, 스케줄러(예: 월말/매주 월요일 크론, 혹은 접속 시점 실시간 호출)에 맞게 파라미터를 채워 넣어야 합니다.
 - `feed_scoring.py`의 `FeedScorer` 프로토콜을 지키는 새 클래스를 만들면, 나중에 학습된 랭킹 모델로 2단계 점수 계산만 교체할 수 있습니다.
+
+## Recap input parity
+
+See [the input-parity contract, rollout and acceptance map](docs/recap/input-parity.md) for complete author aggregates, legacy frozen requests and original algorithm verification.

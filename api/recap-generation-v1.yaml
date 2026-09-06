@@ -106,6 +106,19 @@ components:
         habit_active_weeks: {type: array, maxItems: 10000, items: {$ref: '#/components/schemas/SafeInteger'}}
         achievement_rates: {type: array, maxItems: 10000, items: {type: number, minimum: 0}}
     AuthorPreviousMonth:
+      description: >-
+        Exactly one of a legacy partial aggregate or complete core-metrics-v1 aggregate.
+        Presence of metrics_version always selects complete validation; an invalid marker
+        or incomplete complete aggregate must never fall back to the legacy branch.
+        Complete metrics describe all account-owned Wishes in the month preceding each
+        story completion month in Asia/Seoul, including deleted-Wish activity and outgoing visits.
+        Complete inputs derive type_title through the original CoreMetrics classifier and
+        build_type_section; the supplied candidate type_title remains required but is ignored.
+        Legacy inputs preserve the supplied type_title without inventing missing metrics.
+      oneOf:
+        - {$ref: '#/components/schemas/LegacyAuthorPreviousMonth'}
+        - {$ref: '#/components/schemas/CompleteAuthorPreviousMonth'}
+    LegacyAuthorPreviousMonth:
       type: object
       additionalProperties: false
       minProperties: 1
@@ -117,6 +130,23 @@ components:
         abandon_count: {$ref: '#/components/schemas/SafeInteger'}
         transfer_count: {$ref: '#/components/schemas/SafeInteger'}
         visit_count: {$ref: '#/components/schemas/SafeInteger'}
+    CompleteAuthorPreviousMonth:
+      type: object
+      additionalProperties: false
+      required: [metrics_version, deposit_count, total_savings, avg_amount, regularity_std, pace_bias, abandon_count, transfer_count, visit_count]
+      properties:
+        metrics_version: {type: string, const: core-metrics-v1}
+        deposit_count: {$ref: '#/components/schemas/SafeInteger'}
+        total_savings: {type: integer, minimum: -9007199254740991, maximum: 9007199254740991}
+        avg_amount: {type: number, description: Finite signed average amount; booleans are invalid.}
+        regularity_std: {type: [number, 'null'], minimum: 0, description: Finite nonnegative population deviation of distinct deposit-day gaps or null when undefined.}
+        pace_bias: {type: [number, 'null'], description: Finite signed (second-half net minus first-half net) divided by total savings; null when total savings is nonpositive.}
+        abandon_count: {$ref: '#/components/schemas/SafeInteger'}
+        transfer_count: {$ref: '#/components/schemas/SafeInteger'}
+        visit_count: {$ref: '#/components/schemas/SafeInteger'}
+      examples:
+        - {metrics_version: core-metrics-v1, deposit_count: 0, total_savings: 0, avg_amount: 0, regularity_std: null, pace_bias: null, abandon_count: 0, transfer_count: 0, visit_count: 0}
+        - {metrics_version: core-metrics-v1, deposit_count: 1, total_savings: -500, avg_amount: -500, regularity_std: null, pace_bias: null, abandon_count: 1, transfer_count: 2, visit_count: 3}
     SuccessStoryCandidate:
       type: object
       additionalProperties: false
