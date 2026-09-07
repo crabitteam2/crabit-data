@@ -34,10 +34,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 COPY --from=dependencies /runtime-dependencies/ /usr/local/
-COPY monthly_recap.py recap_presenter.py weekly_recap.py ./
+COPY monthly_recap.py recap_presenter.py weekly_recap.py wish_category_classifier.py ./
 COPY gunicorn.conf.py ./gunicorn.conf.py
 COPY api/recap-generation-v1.yaml ./api/recap-generation-v1.yaml
+COPY api/feed-ranking-v1.yaml ./api/feed-ranking-v1.yaml
 COPY recap_service/ ./recap_service/
+COPY feed/ ./feed/
+COPY feed_service/ ./feed_service/
 
 USER 10001:10001
 EXPOSE 8081

@@ -4,6 +4,8 @@
 
 백엔드 연동용 무상태 HTTP 서비스의 로컬 개발 서버는 `CRABIT_RECAP_TOKEN=... python -m recap_service`로 실행합니다. 운영에서는 digest로 고정한 이미지와 Gunicorn 엔트리포인트를 사용하며, 포트를 host에 publish하지 않고 backend 전용 private network에만 연결합니다. 이미지 빌드·환경 변수·검증·장애 경계는 [`docs/deployment/README.md`](docs/deployment/README.md)에 있습니다.
 
+실제 피드 추천 서비스는 전용 자격 증명으로 분리됩니다. `FEED_RANKING_CREDENTIAL=... python -m feed_service --host 127.0.0.1 --port 8082`로 실행하며, 계약은 [`api/feed-ranking-v1.yaml`](api/feed-ranking-v1.yaml), 운영·검증 경계는 [`docs/recommendation/feed-service.md`](docs/recommendation/feed-service.md)에 있습니다. 기존 recap 명령, 경로, 인증은 바뀌지 않습니다.
+
 정식 내부 계약과 제한·오류·재시도 경계는 [`api/recap-generation-v1.yaml`](api/recap-generation-v1.yaml)에 있습니다. Spring은 스냅샷·생성 ID·재시도·저장을 소유하고 Python은 상태를 저장하지 않은 채 고정된 입력을 동기 계산합니다. 개발 서버가 바인딩되면 stdout에 `recap-service-ready` JSON 한 줄을 출력합니다. 교차 저장소 인수 테스트에서는 `CRABIT_RECAP_PORT=0`으로 OS가 고른 루프백 포트를 이 이벤트에서 읽거나 [`tests/real_service_harness.py`](tests/real_service_harness.py)의 컨텍스트 매니저를 재사용할 수 있습니다.
 
 운영 이미지까지 포함한 저장소 검증은 다음 순서로 실행합니다.

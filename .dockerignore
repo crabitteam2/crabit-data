@@ -5,9 +5,15 @@
 !monthly_recap.py
 !recap_presenter.py
 !weekly_recap.py
+!wish_category_classifier.py
 !api/
 !api/recap-generation-v1.yaml
+!api/feed-ranking-v1.yaml
 !recap_service/
 !recap_service/**
+!feed/
+!feed/**
+!feed_service/
+!feed_service/**
 **/__pycache__/
 **/*.py[cod]
