@@ -1,0 +1,106 @@
+openapi: 3.1.0
+info:
+  title: Crabit internal feed ranking contract
+  version: feed-ranking-v1
+paths:
+  /internal/v1/feed-rankings:
+    post:
+      security: [{feedBearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/FeedRankingRequest'}
+      responses:
+        '200':
+          description: Deterministic feed-rules-v1 ranking
+          content: {application/json: {schema: {$ref: '#/components/schemas/FeedRankingResponse'}}}
+        '400': {description: Malformed request, content: {application/json: {schema: {$ref: '#/components/schemas/FeedRankingError'}}}}
+        '401': {description: Authentication required, content: {application/json: {schema: {$ref: '#/components/schemas/FeedRankingError'}}}}
+        '413': {description: Payload too large, content: {application/json: {schema: {$ref: '#/components/schemas/FeedRankingError'}}}}
+        '415': {description: Unsupported media type, content: {application/json: {schema: {$ref: '#/components/schemas/FeedRankingError'}}}}
+        '422': {description: Invalid feed input, content: {application/json: {schema: {$ref: '#/components/schemas/FeedRankingError'}}}}
+        '500': {description: Ranking failed, content: {application/json: {schema: {$ref: '#/components/schemas/FeedRankingError'}}}}
+        '503': {description: Ranking unavailable, content: {application/json: {schema: {$ref: '#/components/schemas/FeedRankingError'}}}}
+components:
+  securitySchemes:
+    feedBearer: {type: http, scheme: bearer}
+  schemas:
+    FeedRankingRequest:
+      type: object
+      additionalProperties: false
+      required: [schema_version, request_id, context_id, viewer_id, academy_id, recommendation_at, timezone, feature_version, classifier_version, viewer_previous_month, candidates]
+      properties:
+        schema_version: {type: integer, const: 1}
+        request_id: {type: string, format: uuid}
+        context_id: {type: string, format: uuid}
+        viewer_id: {type: string, format: uuid}
+        academy_id: {type: string, format: uuid}
+        recommendation_at: {type: string, format: date-time}
+        timezone: {type: string, const: Asia/Seoul}
+        feature_version: {type: string, const: feed-features-v1}
+        classifier_version: {type: string, pattern: '^[a-z0-9][a-z0-9._-]*@sha256:[a-f0-9]{64}$'}
+        viewer_previous_month: {$ref: '#/components/schemas/FeedMonthMetrics'}
+        candidates: {type: array, maxItems: 100, uniqueItems: true, items: {$ref: '#/components/schemas/FeedRankingCandidate'}}
+    FeedCoreMetrics:
+      type: object
+      additionalProperties: false
+      required: [deposit_count, total_savings, avg_amount, regularity_std, pace_bias, abandon_count, transfer_count, visit_count]
+      properties:
+        deposit_count: {type: integer, minimum: 0, maximum: 9007199254740991}
+        total_savings: {type: integer, minimum: -9007199254740991, maximum: 9007199254740991}
+        avg_amount: {type: number, minimum: -9007199254740991, maximum: 9007199254740991}
+        regularity_std: {type: [number, 'null'], minimum: 0}
+        pace_bias: {type: [number, 'null']}
+        abandon_count: {type: integer, minimum: 0, maximum: 9007199254740991}
+        transfer_count: {type: integer, minimum: 0, maximum: 9007199254740991}
+        visit_count: {type: integer, minimum: 0, maximum: 9007199254740991}
+    FeedMonthMetrics:
+      type: object
+      additionalProperties: false
+      required: [month, coverage, metrics_version, values]
+      properties:
+        month: {type: string, pattern: '^[0-9]{4}-(0[1-9]|1[0-2])$'}
+        coverage: {type: string, enum: [COMPLETE, PARTIAL, UNOBSERVED]}
+        metrics_version: {type: string, const: core-metrics-v1}
+        values:
+          oneOf: [{$ref: '#/components/schemas/FeedCoreMetrics'}, {type: 'null'}]
+    FeedRankingCandidate:
+      type: object
+      additionalProperties: false
+      required: [card_id, author_id, state, created_at, target_date, closed_at, content_updated_at, category_id, basic_similarity, title_similarity, visited_author_before, visited_category_before, author_previous_month]
+      properties:
+        card_id: {type: string, format: uuid}
+        author_id: {type: string, format: uuid}
+        state: {type: string, enum: [IN_PROGRESS, AMOUNT_REACHED, COMPLETED]}
+        created_at: {type: string, format: date-time}
+        target_date: {type: [string, 'null'], format: date}
+        closed_at: {type: [string, 'null'], format: date-time}
+        content_updated_at: {type: string, format: date-time}
+        category_id: {type: string, enum: [패션, 문구, 전자기기, 취미, 스포츠, 게임, 도서, 뷰티, 굿즈, 생활용품, 기타]}
+        basic_similarity: {type: number, enum: [0, 0.3333333333333333, 0.6666666666666666, 1]}
+        title_similarity: {type: number, minimum: 0, maximum: 1}
+        visited_author_before: {type: boolean}
+        visited_category_before: {type: boolean}
+        author_previous_month: {$ref: '#/components/schemas/FeedMonthMetrics'}
+    FeedRankingResponse:
+      type: object
+      additionalProperties: false
+      required: [schema_version, request_id, context_id, input_digest, model_version, ordered_card_ids]
+      properties:
+        schema_version: {type: integer, const: 1}
+        request_id: {type: string, format: uuid}
+        context_id: {type: string, format: uuid}
+        input_digest: {type: string, pattern: '^sha256:[a-f0-9]{64}$'}
+        model_version: {type: string, const: feed-rules-v1}
+        ordered_card_ids: {type: array, maxItems: 20, uniqueItems: true, items: {type: string, format: uuid}}
+    FeedRankingError:
+      type: object
+      additionalProperties: false
+      required: [code, message, retryable, trace_id, field_errors]
+      properties:
+        code: {type: string, enum: [MALFORMED_REQUEST, AUTH_REQUIRED, PAYLOAD_TOO_LARGE, UNSUPPORTED_MEDIA_TYPE, INVALID_FEED_INPUT, RANKING_FAILED, RANKING_UNAVAILABLE]}
+        message: {type: string, minLength: 1, maxLength: 256}
+        retryable: {type: boolean}
+        trace_id: {type: string, minLength: 1, maxLength: 128}
+        field_errors: {type: array, maxItems: 64, uniqueItems: true, items: {type: string, minLength: 1, maxLength: 128}}

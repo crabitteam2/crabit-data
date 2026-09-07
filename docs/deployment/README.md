@@ -1,7 +1,9 @@
 # Recap service production image
 
 이 디렉터리는 이미 확정된 `POST /internal/v1/recap-generations` 계약과 계산 로직을 바꾸지 않고
-Python 서비스를 Staging과 Stable Demo의 private runtime에 배치하는 방법을 설명한다. Core production
+Python 서비스를 Staging과 Stable Demo의 private runtime에 배치하는 방법을 설명한다. 같은 immutable
+image에는 별도 자격 증명과 listener로 실행하는 `feed_service.wsgi:application`도 포함된다. 기본 image
+command는 recap을 그대로 유지하고 feed 배포만 Gunicorn application target을 명시적으로 바꾼다. Core production
 연결, provider secret 생성·회전, VM rollout, DNS, TLS, merge와 release는 이 저장소 변경의 범위가
 아니다. 이 저장소가 제공하는 publication workflow와 script는 immutable recap image를 만들고 Docker
 Hub에서 그 identity를 다시 읽는 데까지만 책임진다. Workflow 실행과 registry write 자체는 별도
@@ -16,9 +18,10 @@ Gunicorn과 그 직접 의존성은 `recap_service/runtime-requirements.txt`의 
 - 기존 recap 계산 모듈 `monthly_recap.py`, `weekly_recap.py`, `recap_presenter.py`
 - 기존 transport와 validation을 포함한 `recap_service/`
 - byte-identical `api/recap-generation-v1.yaml`
+- `feed/`, `feed_service/`, `wish_category_classifier.py`, `api/feed-ranking-v1.yaml`
 - bounded Gunicorn 설정
 
-CSV 데이터, feed 추천 코드, batch entrypoint, 테스트, Git metadata와 로컬 환경 파일은 build context와
+CSV 데이터, batch entrypoint, 테스트, Git metadata와 로컬 환경 파일은 build context와
 runtime image에서 제외한다. Build에는 정확한 40자리 commit SHA를 전달하고 이미지는 이를 OCI revision
 label로 보존한다.
 
