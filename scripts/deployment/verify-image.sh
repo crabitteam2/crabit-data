@@ -8,7 +8,8 @@ set -Eeuo pipefail
 readonly IMAGE="$1"
 readonly EXPECTED_REVISION="$2"
 readonly ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-readonly CONTRACT_PATH="app/api/recap-generation-v1.yaml"
+readonly RECAP_CONTRACT_PATH="app/api/recap-generation-v1.yaml"
+readonly FEED_CONTRACT_PATH="app/api/feed-ranking-v1.yaml"
 
 [[ "${EXPECTED_REVISION}" =~ ^[0-9a-f]{40}$ ]] || {
 	printf 'invalid expected revision\n' >&2
@@ -72,18 +73,55 @@ trap cleanup EXIT
 container_id="$(docker create "${IMAGE}")"
 docker export "${container_id}" --output "${tmp_dir}/rootfs.tar"
 tar -xf "${tmp_dir}/rootfs.tar" -C "${tmp_dir}" \
-	"${CONTRACT_PATH}" \
+	"${RECAP_CONTRACT_PATH}" \
+	"${FEED_CONTRACT_PATH}" \
 	app/gunicorn.conf.py \
+	app/wish_category_classifier.py \
+	app/feed/__init__.py \
+	app/feed/candidate_extraction.py \
+	app/feed/diversity_rules.py \
+	app/feed/feed_recommend.py \
+	app/feed/feed_recommend_ind.py \
+	app/feed/feed_scoring.py \
+	app/feed/ranking.py \
+	app/feed_service/__init__.py \
+	app/feed_service/__main__.py \
+	app/feed_service/app.py \
+	app/feed_service/validation.py \
+	app/feed_service/wsgi.py \
 	app/recap_service/app.py \
 	app/recap_service/wsgi.py
-cmp -s "${ROOT}/api/recap-generation-v1.yaml" "${tmp_dir}/${CONTRACT_PATH}" || {
+cmp -s "${ROOT}/api/recap-generation-v1.yaml" "${tmp_dir}/${RECAP_CONTRACT_PATH}" || {
 	printf 'packaged generation OpenAPI bytes do not match the repository contract\n' >&2
+	exit 1
+}
+cmp -s "${ROOT}/api/feed-ranking-v1.yaml" "${tmp_dir}/${FEED_CONTRACT_PATH}" || {
+	printf 'packaged feed OpenAPI bytes do not match the repository contract\n' >&2
 	exit 1
 }
 cmp -s "${ROOT}/gunicorn.conf.py" "${tmp_dir}/app/gunicorn.conf.py" || {
 	printf 'packaged Gunicorn configuration does not match the repository\n' >&2
 	exit 1
 }
+for source_path in \
+	wish_category_classifier.py \
+	feed/__init__.py \
+	feed/candidate_extraction.py \
+	feed/diversity_rules.py \
+	feed/feed_recommend.py \
+	feed/feed_recommend_ind.py \
+	feed/feed_scoring.py \
+	feed/ranking.py \
+	feed_service/__init__.py \
+	feed_service/__main__.py \
+	feed_service/app.py \
+	feed_service/validation.py \
+	feed_service/wsgi.py; do
+	cmp -s "${ROOT}/${source_path}" "${tmp_dir}/app/${source_path}" || {
+		printf 'packaged feed runtime bytes do not match the repository: %s\n' "${source_path}" >&2
+		exit 1
+	}
+done
 cmp -s "${ROOT}/recap_service/app.py" "${tmp_dir}/app/recap_service/app.py" || {
 	printf 'packaged WSGI transport does not match the repository\n' >&2
 	exit 1
@@ -94,8 +132,8 @@ cmp -s "${ROOT}/recap_service/wsgi.py" "${tmp_dir}/app/recap_service/wsgi.py" ||
 }
 
 if tar -tf "${tmp_dir}/rootfs.tar" | awk '
-	/^app\/(tests|data|feed|\.git)(\/|$)/ { found = 1 }
-	/^app\/(generate_data|monthly_batch|weekly_batch|wish_category_classifier)\.py$/ { found = 1 }
+	/^app\/(tests|data|\.git)(\/|$)/ { found = 1 }
+	/^app\/(generate_data|monthly_batch|weekly_batch)\.py$/ { found = 1 }
 	/^app\/.*(^|\/)(\.env($|\.)|.*\.(key|pem)$)/ { found = 1 }
 	/^app\/.*(__pycache__|\.py[co]$)/ { found = 1 }
 	END { exit(found ? 0 : 1) }
@@ -105,6 +143,7 @@ if tar -tf "${tmp_dir}/rootfs.tar" | awk '
 fi
 
 image_id="$(docker image inspect "${IMAGE}" --format '{{.Id}}')"
-printf 'image verified: image=%s id=%s revision=%s user=%s contract_sha256=%s\n' \
+printf 'image verified: image=%s id=%s revision=%s user=%s recap_contract_sha256=%s feed_contract_sha256=%s\n' \
 	"${IMAGE}" "${image_id}" "${EXPECTED_REVISION}" "${user}" \
-	"$(sha256sum "${ROOT}/api/recap-generation-v1.yaml" 2>/dev/null | awk '{print $1}' || shasum -a 256 "${ROOT}/api/recap-generation-v1.yaml" | awk '{print $1}')"
+	"$(sha256sum "${ROOT}/api/recap-generation-v1.yaml" 2>/dev/null | awk '{print $1}' || shasum -a 256 "${ROOT}/api/recap-generation-v1.yaml" | awk '{print $1}')" \
+	"$(sha256sum "${ROOT}/api/feed-ranking-v1.yaml" 2>/dev/null | awk '{print $1}' || shasum -a 256 "${ROOT}/api/feed-ranking-v1.yaml" | awk '{print $1}')"
