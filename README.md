@@ -29,7 +29,7 @@ git diff --check
 
 | 파일 | 역할 |
 |---|---|
-| `generate_data.py` | 테스트용 더미 데이터(CSV) 생성 로직 (참고용, 아래 2번 참고) |
+| `generate_data.py` / `synthetic_data/` | 실제 backend 결과로 다음 행동을 정하는 100명 합성 시뮬레이션과 CSV 투영 |
 | `monthly_recap.py` | 월말 리캡 **계산 로직** (핵심 변수, 저축 유형 판별, 4개 섹션 데이터 생성) |
 | `monthly_batch.py` | 학원 전체 학생을 순회하며 월말 리캡을 **실행**하고 결과를 저장 |
 | `weekly_recap.py` | 주간 활동 요약 **계산 로직** (1~3페이지 데이터 생성) |
@@ -51,24 +51,23 @@ git diff --check
 
 `monthly_*`와 `weekly_*`는 데이터 모델(`Wish`, `SavingsTransaction`, `CardAccount`, `UserProfile` 등)을 `monthly_recap.py`에서 공유합니다. `weekly_recap.py`는 여기에 `FeedPost`만 추가로 정의합니다.
 
-## 2. `generate_data.py` (참고용)
+## 2. 100명 합성 시뮬레이션
 
-리캡/피드 추천 스크립트들은 모두 `data/` 폴더의 CSV 파일을 읽습니다. 이 저장소에는 `generate_data.py`로 만든 데이터가 `data/` 폴더에 이미 포함되어 있으므로, **이 파일을 실행할 필요가 없습니다.** 어떤 로직으로 더미 데이터를 만들었는지 참고하거나, 데이터를 새로 생성하고 싶을 때만 실행하면 됩니다.
+`generate_data.py`는 `python -m synthetic_data`와 같은 CLI입니다. 2026-06-01부터 09-10까지의 합성 학생 100명 행동을 로컬 backend `simulationSession`의 STEP/실제 결과/FINISH로 생성합니다. 실제 Python 피드·리캡 서비스와 새 PostgreSQL DB를 사용합니다. 기존 `data/`는 덮어쓰지 않습니다.
 
 ```bash
-python generate_data.py
+python -m synthetic_data generate --backend ../crabit-backend --output docs/demo/artifacts/run-01
+python -m synthetic_data validate --run docs/demo/artifacts/run-01
+python -m synthetic_data bundle --run docs/demo/artifacts/run-01 --schema ../crabit-backend/api/demo-simulation-v1.schema.json --output docs/demo/artifacts/package-01
+python -m synthetic_data replay --package docs/demo/artifacts/package-01 --backend ../crabit-backend --output docs/demo/artifacts/fixed-01
+python -m synthetic_data verify-application --package docs/demo/artifacts/package-01 --backend ../crabit-backend --output docs/demo/artifacts/application-01
 ```
 
-생성되는 파일 (모두 `data/` 폴더 안):
+현재 검증된 `full-03`은 100명 전체 생성과 CSV를 완료했지만, `package-04`는 8 GiB 합계 초과·NOT_ELIGIBLE 참조 계약·관리 dry-run 소속 검사 문제로 전달이 차단돼 있습니다. 두 고정 재생 및 실제 적용·복원은 완료되지 않았습니다. 상세 실측과 실행 결과는 [인계 본문](docs/demo/pull-request.md)과 [차단 근거](docs/demo/backend-blockers.json)를 확인합니다. `--retain-unadmitted`는 실패한 입장 상태의 원본 증거 보존 전용입니다.
 
-- `card_accounts.csv` — 계좌(학생) 정보
-- `users.csv` — 학생 프로필(이름, 나이)
-- `wishes.csv` — 위시(저축 목표) 목록
-- `savings_transactions.csv` — 입금/출금/이체/환급 거래 내역
-- `feed_posts.csv` — 위시 공유 피드
-- `profile_visits.csv` — 프로필 방문 기록
+각 출력 경로는 새 경로여야 합니다. Java 21(`JAVA_HOME`), 로컬 Unix Docker, backend가 준비한 simulation clock 이미지와 migration이 필요합니다. `verify-application`은 자체 생성한 로컬 대상에서 실제 백업·dry-run·적용·read-back·복원을 실행하며 외부 접속 URL을 받지 않습니다.
 
-학원 1개(`aca1`), 학생 30명, 2026년 8월 기준 4가지 저축 유형(불도저형/꾸준형/단기집중형/탐색형)이 골고루 나오도록 설계된 시뮬레이션 데이터입니다. 재실행하면 `random.seed(42)`라서 학생 배치는 같지만, 오늘 날짜(`date.today()`)를 시뮬레이션 종료일로 쓰기 때문에 실행 시점에 따라 데이터 양은 달라질 수 있습니다.
+완성 package의 `csv/`에는 `users.csv`, `card_accounts.csv`, `wishes.csv`, `savings_transactions.csv`, `feed_posts.csv`, `profile_visits.csv`가 있습니다. 이들은 실제 관계형 export의 파생 파일입니다. 현금 ledger·상태·원본 피드/리캡 요청과 응답·정규화 비교본은 package에 별도로 보존합니다. 레거시 배치 예제의 `aca1`/30명 데이터와 이번 `academy-1`/100명 dataset은 서로 다른 자료입니다. 자세한 정책과 실행 상태는 [DATA 실행 문서](docs/demo/policy-coverage.md)를 참고합니다.
 
 ## 3. 월말 리캡
 

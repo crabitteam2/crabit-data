@@ -1,0 +1,108 @@
+{
+  "actualCsvConsumerReadBack": {
+    "report": "docs/demo/artifacts/csv-smoke-03-consumer-readback.json",
+    "sha256": "sha256:2903f40cc4c57543d8e4674b78dcd4b4cb65c383a1b2964d992c017882be39f1",
+    "status": "PASS"
+  },
+  "csvLedgerReconciliation": {
+    "closedWishes": 114,
+    "currentAllocatedAmount": 633196,
+    "deletedWishes": 32,
+    "ledgerRows": 1693,
+    "status": "PASS",
+    "wishes": 222
+  },
+  "feedNearTie": {
+    "actualFailureEvent": "full-02:e3099",
+    "fixture": "tests/fixtures/synthetic-data/feed-near-tie.json",
+    "javaFailureCode": "FEED_RANKING_ORDER",
+    "leftFoldMatchedJava": true
+  },
+  "focusedContract": {
+    "command": "CRABIT_BACKEND_OPENAPI=<current backend api/openapi.yaml> python3 -m unittest discover -s tests -p test_feed_contract_projection.py -v",
+    "logSha256": "sha256:f5a6e4e8cdc3ecf44af53e80606ab2a9f5540566b30820a8f895b4227fd23d5c",
+    "passed": 2,
+    "resolved": "Canonical OpenAPI source digest only; feed extension bytes unchanged",
+    "status": "PASS",
+    "tests": 2
+  },
+  "fullDiscoveryOracle": {
+    "events": 18396,
+    "people": 100,
+    "periods": 1472,
+    "rawRecords": 78085,
+    "report": "docs/demo/artifacts/full-03/final-validation.json",
+    "sha256": "sha256:9116992d79be1e86f1b01c6f0b97e8edc107aa4fdbf96fd1af8a81c6dc1ef630",
+    "status": "PASS"
+  },
+  "fullSuite": {
+    "afterFinalDataSourceFixes": true,
+    "command": "CRABIT_BACKEND_OPENAPI=../crabit-backend/api/openapi.yaml python3 -m unittest discover -s tests -v",
+    "elapsedSeconds": 4.458,
+    "errors": 0,
+    "logSha256": "sha256:7ce58e3b2f037905b4ef6c148d365c0e8926c7176787582d023a6b82e15609d2",
+    "passed": 77,
+    "skipped": 0,
+    "status": "PASS",
+    "tests": 77
+  },
+  "initialSuite": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "passed": 72,
+    "skipReason": "CRABIT_BACKEND_OPENAPI not explicitly supplied",
+    "skipped": 1,
+    "tests": 73
+  },
+  "localApplication": {
+    "afterRejectedPrepareFingerprint": "sha256:afea409b751e635c1fa5f2560c39a1afe6bfad260f3fbfe7dbf0817c58d3b7f1",
+    "applicationExecuted": false,
+    "beforeFingerprint": "sha256:afea409b751e635c1fa5f2560c39a1afe6bfad260f3fbfe7dbf0817c58d3b7f1",
+    "bundleAdmissionAtStart": "BLOCKED_BACKEND_REQUIREMENTS",
+    "dryRunRollbackVerified": true,
+    "externalConsoleVerified": false,
+    "externalDemoApplied": false,
+    "manifestDigest": "sha256:4aa120ac66807f8052207f9b5da2733030795a2120510ef6cfe2df1bb09496d4",
+    "originalDomainTablesUnchanged": true,
+    "prepareFailureLog": "prepare/process.log",
+    "restoreExecuted": false,
+    "status": "BLOCKED_BEFORE_APPLY"
+  },
+  "localTargetBootstrap": "STARTED_REAL_MIGRATIONS_AND_CLEANED_UP",
+  "ownedContainerCleanup": {
+    "containersAbsent": 4,
+    "report": "docs/demo/artifacts/local-container-cleanup.json",
+    "status": "PASS"
+  },
+  "previousFullSuite": {
+    "command": "CRABIT_BACKEND_OPENAPI=../crabit-backend/api/openapi.yaml python3 -m unittest discover -s tests -v",
+    "elapsedSeconds": 3.968,
+    "errors": 0,
+    "hostAuthority": "existing loopback HTTP fixtures required sandbox escalation; authorized run passed",
+    "logSha256": "sha256:c951c940c4daea2a09280ff029d0522e02835503aef2a7cb3c6b7097fb05a0b4",
+    "passed": 77,
+    "skipped": 0,
+    "status": "PASS",
+    "tests": 77
+  },
+  "sandboxAttempt": {
+    "errors": 2,
+    "logSha256": "sha256:badbe55dbc608f2e1fb5f1380f8b77114fcf1607d464a8d9e804f67783ba8f72",
+    "reason": "Loopback HTTP socket binding denied by filesystem/network sandbox",
+    "tests": 77
+  },
+  "scope": "DATA_ONLY",
+  "testSourceInventory": {
+    "tests/__init__.py": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/real_service_harness.py": "sha256:aed8baed2a8f2e0a323977f3bfdafdbb92d2ffd9a6debafb34fab03984dbec09",
+    "tests/test_deployment.py": "sha256:f74d3a84ca824a6a5e01b10aef55b5264e5d09fcffff9f48a76a001848afb8ac",
+    "tests/test_feed_contract_projection.py": "sha256:50600c9bed8329e47ade1703e4bf26ae52373e4416aeb5b934a7fde0f4559323",
+    "tests/test_feed_service.py": "sha256:c0e19b3eba5a5b63d3dd3010a4f1d8e8766f95556836573354ed6165ba82932a",
+    "tests/test_recap_input_parity.py": "sha256:d14aaadf68c536eaa8e76979b730e5a12e8a71cb2a6dc17258d023d16e505da8",
+    "tests/test_recap_service.py": "sha256:94a724312feb67c56ed3e6f0f1801c0fb4352607f3bf20154b3b8bc38121b1f9",
+    "tests/test_synthetic_csv_time.py": "sha256:6f3bd8f92558da1117629652cbe0b7196a76d4ae2547cafb86391e1b8d39f9c5",
+    "tests/test_synthetic_feed_near_tie.py": "sha256:2771a7abb29c554fb95b6bcb90caba706d682543b04209c78e37779ce2b464f9",
+    "tests/test_synthetic_oracle.py": "sha256:c253c866e1575449d99f4d9126cf41e5f5cde614cf5f88f959e6474ba026cc53",
+    "tests/test_synthetic_policy.py": "sha256:6361aa29a37ef5956204d834718c56dc8d3fc9ef82dee2a68985d78574e99672",
+    "tests/test_synthetic_storage.py": "sha256:a1921b03e114a5d734673a69fc7c631e92be67fe0fd7dd81c68c68d9be49d7f7"
+  }
+}

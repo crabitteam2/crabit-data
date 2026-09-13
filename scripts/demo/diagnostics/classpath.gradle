@@ -1,0 +1,1 @@
+allprojects { afterEvaluate { tasks.register('simulationDiagnosticClasspath') { doLast { println(sourceSets.simulation.runtimeClasspath.asPath) } } } }

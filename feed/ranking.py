@@ -81,7 +81,11 @@ def score_candidates(request: dict[str, Any]) -> list[RankedCandidate]:
             "success_case_fit": 1.0 if candidate["state"] == "COMPLETED" else .5,
             "recency_score": _recency(candidate["_content_updated_at"], now),
         }
-        score = sum(WEIGHTS[name] * value for name, value in features.items())
+        # Explicit binary64 left fold: Python 3.12+ sum uses compensated
+        # arithmetic, which changes near-tie ordering across runtimes.
+        score = 0.0
+        for name, value in features.items():
+            score += WEIGHTS[name] * value
         if not math.isfinite(score):
             raise ValueError("candidate score is not finite")
         ranked.append(RankedCandidate(candidate, score, author_type, position))

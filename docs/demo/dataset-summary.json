@@ -1,0 +1,135 @@
+{
+  "capacityViolations": [
+    {
+      "actual": 13862132635,
+      "dimension": "aggregateBytes",
+      "limit": 8589934592
+    }
+  ],
+  "controllerStateMutated": false,
+  "csvRows": {
+    "card_accounts.csv": 100,
+    "feed_posts.csv": 138,
+    "profile_visits.csv": 1752,
+    "savings_transactions.csv": 1693,
+    "users.csv": 100,
+    "wishes.csv": 222
+  },
+  "currentAllocatedAmount": 633196,
+  "datasetId": "sha256:4321c0be722100494edb880f16474481a11c2b076a5634bf1815057d075d28bc",
+  "deletedWishes": 32,
+  "eventCounts": {
+    "ABANDON": 47,
+    "BALANCE_LOOKUP": 2329,
+    "BLOCK": 45,
+    "CLICK": 2097,
+    "CLOSE_MONTH": 256,
+    "CLOSE_WEEK": 1216,
+    "COMPLETE": 67,
+    "CREATE": 222,
+    "DELETE": 32,
+    "DEPOSIT": 1402,
+    "FEED_QUERY": 2445,
+    "FOLLOW": 523,
+    "GRANT": 830,
+    "IMPRESSION": 3272,
+    "INFLUENCED_DECISION": 96,
+    "JOIN": 100,
+    "PROFILE_VISIT": 1757,
+    "PURCHASE": 1090,
+    "RETURN_FROM_DORMANCY": 16,
+    "SHARE": 221,
+    "TRANSFER": 41,
+    "UNBLOCK": 42,
+    "UNFOLLOW": 77,
+    "VISIBILITY_CHANGE": 72,
+    "WITHDRAW": 101
+  },
+  "events": 18396,
+  "externalDemoApplied": false,
+  "feedExchangesVerified": 2310,
+  "feedHttpAttempts": 2311,
+  "feedHttpResponses": 2310,
+  "finalTestsPassed": 77,
+  "firstEventAt": "2026-05-31T15:00:00Z",
+  "generationJvmMetricsSha256": "sha256:898e71f610119c5d1d242bcddb0fc2aec4bc316b848d709696f74fb7d41ec869",
+  "generationJvmPeakMemoryFootprintBytes": 4711289224,
+  "generationJvmPeakRssBytes": 3745103872,
+  "generationMeasurement": {
+    "artifactBytes": 27928592295,
+    "directChildPeakRssBytes": 111460352,
+    "elapsedSeconds": 4874.338,
+    "fileCount": 114599,
+    "jvmResourceUsageRef": "jvm-resource-usage.txt",
+    "pythonPeakRssBytes": 65585152,
+    "readyForApplication": false
+  },
+  "grades": {
+    "3": 25,
+    "4": 25,
+    "5": 25,
+    "6": 25
+  },
+  "influenceAnnotations": 96,
+  "joinDates": {
+    "2026-05-31T15:00:00Z": 80,
+    "2026-06-30T15:00:00Z": 4,
+    "2026-07-14T15:00:00Z": 4,
+    "2026-07-31T15:00:00Z": 4,
+    "2026-08-16T15:00:00Z": 4,
+    "2026-09-02T15:00:00Z": 4
+  },
+  "lastEventAt": "2026-09-10T03:00:00.208000Z",
+  "latestPages": 3,
+  "localApplication": {
+    "afterRejectedPrepareFingerprint": "sha256:afea409b751e635c1fa5f2560c39a1afe6bfad260f3fbfe7dbf0817c58d3b7f1",
+    "applicationExecuted": false,
+    "beforeFingerprint": "sha256:afea409b751e635c1fa5f2560c39a1afe6bfad260f3fbfe7dbf0817c58d3b7f1",
+    "bundleAdmissionAtStart": "BLOCKED_BACKEND_REQUIREMENTS",
+    "dryRunRollbackVerified": true,
+    "externalConsoleVerified": false,
+    "externalDemoApplied": false,
+    "manifestDigest": "sha256:4aa120ac66807f8052207f9b5da2733030795a2120510ef6cfe2df1bb09496d4",
+    "originalDomainTablesUnchanged": true,
+    "prepareFailureLog": "prepare/process.log",
+    "restoreExecuted": false,
+    "status": "BLOCKED_BEFORE_APPLY"
+  },
+  "manifestDigest": "sha256:4aa120ac66807f8052207f9b5da2733030795a2120510ef6cfe2df1bb09496d4",
+  "matchedClicks": 2005,
+  "measuredBundleSize": {
+    "aggregateBytes": 13862132635,
+    "files": 78095,
+    "manifestBytes": 13432329,
+    "maxArtifactBytes": 19967699
+  },
+  "notEligibleWithoutHttpResponses": 79,
+  "outboxTypedParentOwnership": {
+    "allParentAccountsInTarget": true,
+    "allParentCasesExist": true,
+    "rows": 37
+  },
+  "outcomes": {
+    "APPLIED": 18386,
+    "REJECTED": 10
+  },
+  "ownedContainersRemoved": 4,
+  "periods": 1472,
+  "population": 100,
+  "rawBytes": 13828962213,
+  "rawRecords": 78085,
+  "recommendationPages": 2442,
+  "schemaVersion": 1,
+  "status": "GENERATION_COMPLETE_DELIVERY_BLOCKED",
+  "targetAmountRange": {
+    "maximum": 198000,
+    "minimum": 5000
+  },
+  "twoFixedReplaysVerified": false,
+  "unmatchedClicks": 92,
+  "wishStates": {
+    "ABANDONED": 47,
+    "COMPLETED": 67,
+    "IN_PROGRESS": 108
+  }
+}

@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import csv
 from pathlib import Path
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 import json
 from pathlib import Path
@@ -61,7 +61,10 @@ def _parse_date(value: str | None) -> date | None:
 def _parse_datetime(value: str | None) -> datetime | None:
     if not value:
         return None
-    return datetime.strptime(value.strip(), "%Y-%m-%d %H:%M:%S")
+    parsed = datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
+    # Legacy CSVs use naive Korean local time; canonical exports preserve UTC
+    # and microseconds. Normalize the zone without discarding event precision.
+    return parsed.astimezone(timezone(timedelta(hours=9))).replace(tzinfo=None) if parsed.tzinfo else parsed
 
 
 def _parse_bool(value: str | None) -> bool:

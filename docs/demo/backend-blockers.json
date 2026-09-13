@@ -1,0 +1,62 @@
+{
+  "backendHeadSha": "cfd4e400b865a8fbe99b2f27f638b05edf1cfa0e",
+  "blockers": [
+    {
+      "actorStudentId": "student-3-00",
+      "code": "NOT_ELIGIBLE_RESPONSE_REF_UNMATERIALIZED",
+      "dataAction": "Continue full generation and independent artifacts; preserve original RAW",
+      "diagnostic": "scripts/demo/diagnostics/TimelineDiagnostic.java",
+      "eventId": "e5101",
+      "eventKind": "CLOSE_MONTH",
+      "finalLog": "docs/demo/artifacts/full-03/final-timeline-diagnostic.log",
+      "finalLogSha256": "sha256:6609a6c6e90fe90850ca0f6311148b02aa844511370997b554a09279dfff2990",
+      "finalUnmaterializedReferences": 79,
+      "log": "docs/demo/artifacts/full-03/not-eligible-timeline-diagnostic.log",
+      "logSha256": "sha256:6609a6c6e90fe90850ca0f6311148b02aa844511370997b554a09279dfff2990",
+      "missingPath": "raw/close/c5101-response.json",
+      "observedRejection": "INVARIANT_VIOLATION: ARTIFACT_REF event=e5101",
+      "observedState": "NOT_ELIGIBLE",
+      "pythonInvoked": false,
+      "requiredBackendResolution": "Represent a normal no-HTTP NOT_ELIGIBLE closure consistently across command refs, raw capture, bundle admission and fixed replay without fabricating a Python response.",
+      "run": "docs/demo/artifacts/full-03"
+    },
+    {
+      "actualReplayProcessStarted": false,
+      "code": "ACTUAL_RAW_EXCEEDS_BACKEND_TOTAL_BYTES",
+      "dataAction": "Retain complete generation/CSV/UNADMITTED manifest and independent local apply/restore; never claim fixed replay passed",
+      "hostAutomaticApprovalReview": "Rejected two fixed replays due to oversized input and storage exhaustion risk",
+      "measurements": {
+        "backendAggregateLimit": 8589934592,
+        "bundleAggregateBytes": 13862132635,
+        "complete": true,
+        "manifestDigest": "sha256:4aa120ac66807f8052207f9b5da2733030795a2120510ef6cfe2df1bb09496d4",
+        "rawBytes": 13828962213,
+        "rawFiles": 78085
+      },
+      "observedRejection": "SCHEMA_INVALID: total bundle byte limit",
+      "readOnlyAdmissionLog": "docs/demo/artifacts/admission-04/admission.log",
+      "readOnlyAdmissionLogSha256": "sha256:53eea034097fc04d89654a49ca0ba99a4d7f37c40173c93777fd735780901c6a",
+      "requiredBackendResolution": "Admit and replay the full immutable evidence with measured bounded memory; keep actual RAW and full 100-person date scope. Current backend eagerly materializes and clones all artifact bytes.",
+      "run": "docs/demo/artifacts/full-03"
+    },
+    {
+      "actualRows": 37,
+      "applicationExecuted": false,
+      "authoritativeRollbackReport": "docs/demo/artifacts/application-06/verification.json",
+      "authoritativeRollbackReportSha256": "sha256:8187fe31b4ad8e90394f586902bd3241deb5c716c0714ce199fcb87728c5dc78",
+      "code": "IMPORT_ROW_OUTSIDE_TARGET_MISMATCH_NOTIFICATION_OUTBOX",
+      "command": "simulationImport PREPARE <full 100-person relational state> <new output>",
+      "dryRunRollbackVerified": true,
+      "input": "docs/demo/artifacts/package-04/state/relational.json",
+      "inputSha256": "sha256:c22bf44e60471ed2fd0853dcb4c38b584d5a832c8ef1f0d707ffb75d74ad8124",
+      "log": "docs/demo/artifacts/application-05/prepare/process.log",
+      "logSha256": "sha256:2e061e7b3abe301452441db77ced8e3286fbca141979a4bdc49dbbc44d342aff",
+      "requiredBackendResolution": "Recognize typed parent ownership for the outbox and validate the complete real graph without removing original notification rows.",
+      "restoreExecuted": false,
+      "scopeProblem": "Rows are owned via adjustment_case_id, but V21 demo_import_graph does not check that parent relation and accepts only direct account/student columns for this table.",
+      "typedParentOwnershipVerified": true
+    }
+  ],
+  "schemaVersion": 1,
+  "status": "OPEN"
+}

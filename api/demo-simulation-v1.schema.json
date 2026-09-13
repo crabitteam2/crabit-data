@@ -1,0 +1,4814 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://crabit.local/api/demo-simulation-v1.schema.json",
+  "title": "Demo simulation v1 canonical manifest and input admission",
+  "description": "Manifest plus config/student/persona input schemas. Admission does not validate domain payloads, logicalDigest, real replay or application readiness.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "schemaKind",
+    "datasetId",
+    "configDigest",
+    "schemaDigest",
+    "normalizationVersion",
+    "logicalDigest",
+    "codeShas",
+    "runtimeVersions",
+    "files"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "schemaKind": {
+      "const": "demo-simulation-manifest"
+    },
+    "datasetId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "configDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "schemaDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "normalizationVersion": {
+      "const": 1
+    },
+    "logicalDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "codeShas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "crabit-backend",
+        "crabit-data",
+        "crabit-frontend"
+      ],
+      "properties": {
+        "crabit-backend": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "crabit-data": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "crabit-frontend": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      }
+    },
+    "runtimeVersions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "java",
+        "postgresql",
+        "python",
+        "node",
+        "feedModel",
+        "recapModel"
+      ],
+      "properties": {
+        "java": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "postgresql": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "python": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "feedModel": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "recapModel": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "role",
+          "byteLength",
+          "sha256",
+          "recordCount"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "maxLength": 240,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*(/[A-Za-z0-9][A-Za-z0-9_.-]*)*$"
+          },
+          "role": {
+            "enum": [
+              "CONFIG",
+              "STUDENTS",
+              "PERSONAS",
+              "EVENTS",
+              "ID_MAP",
+              "STATE",
+              "VALIDATION",
+              "NORMALIZED",
+              "SCHEMA",
+              "RAW",
+              "RAW_INDEX"
+            ]
+          },
+          "byteLength": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 134217728
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "recordCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          }
+        }
+      },
+      "minItems": 9,
+      "maxItems": 262144
+    }
+  },
+  "$defs": {
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "seed",
+        "timezone",
+        "startInclusive",
+        "endExclusive",
+        "academyCount",
+        "population",
+        "grades",
+        "studentsPerGrade",
+        "initialStudentsPerGrade",
+        "laterStudentsPerGrade",
+        "assumptions",
+        "policyVersion",
+        "namespace",
+        "monthlyBudgetRules",
+        "runtimeVersions"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "timezone": {
+          "const": "Asia/Seoul"
+        },
+        "startInclusive": {
+          "const": "2026-05-31T15:00:00Z"
+        },
+        "endExclusive": {
+          "const": "2026-09-10T15:00:00Z"
+        },
+        "academyCount": {
+          "const": 1
+        },
+        "population": {
+          "const": 100
+        },
+        "grades": {
+          "const": [
+            3,
+            4,
+            5,
+            6
+          ]
+        },
+        "studentsPerGrade": {
+          "const": 25
+        },
+        "initialStudentsPerGrade": {
+          "const": 20
+        },
+        "laterStudentsPerGrade": {
+          "const": 5
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "policyVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "namespace": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "monthlyBudgetRules": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "minimumKrw",
+            "maximumKrw",
+            "partialMonthPolicy"
+          ],
+          "properties": {
+            "minimumKrw": {
+              "const": 10000
+            },
+            "maximumKrw": {
+              "const": 30000
+            },
+            "partialMonthPolicy": {
+              "const": "ACTUAL_SCHEDULED_GRANTS_ONLY"
+            }
+          }
+        },
+        "runtimeVersions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "java",
+            "postgresql",
+            "python",
+            "node",
+            "feedModel",
+            "recapModel"
+          ],
+          "properties": {
+            "java": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "postgresql": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "python": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "node": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "feedModel": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "recapModel": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            }
+          }
+        }
+      }
+    },
+    "students": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "logicalStudentId",
+          "logicalAccountId",
+          "logicalAcademyId",
+          "grade",
+          "syntheticDisplayName",
+          "joinedAt",
+          "archetypeInputs",
+          "isOwner"
+        ],
+        "properties": {
+          "logicalStudentId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "logicalAccountId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "logicalAcademyId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "grade": {
+            "type": "integer",
+            "minimum": 3,
+            "maximum": 6
+          },
+          "syntheticDisplayName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "joinedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+          },
+          "archetypeInputs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "value"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160
+                },
+                "value": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 1000
+                    },
+                    {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    {
+                      "type": "boolean"
+                    }
+                  ]
+                }
+              }
+            },
+            "minItems": 0,
+            "maxItems": 100
+          },
+          "isOwner": {
+            "type": "boolean"
+          }
+        }
+      },
+      "minItems": 100,
+      "maxItems": 100
+    },
+    "personas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "persona",
+          "grade",
+          "displayName",
+          "logicalStudentId",
+          "logicalAccountId"
+        ],
+        "properties": {
+          "persona": {
+            "enum": [
+              "grade-3",
+              "grade-4",
+              "grade-5",
+              "grade-6"
+            ]
+          },
+          "grade": {
+            "type": "integer",
+            "minimum": 3,
+            "maximum": 6
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "logicalStudentId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "logicalAccountId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        }
+      },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "event": {
+      "description": "Closed implemented event vocabulary. ADJUST_ALLOCATION and CORRECT remain unsupported until their domain command binding is implemented. Admission is not replay or state validation.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "JOIN"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "studentId",
+                "accountId",
+                "academyId",
+                "grade"
+              ],
+              "properties": {
+                "studentId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "academyId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "grade": {
+                  "type": "integer",
+                  "minimum": 3,
+                  "maximum": 6
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "RETURN_FROM_DORMANCY"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "priorDormancyEventId"
+              ],
+              "properties": {
+                "priorDormancyEventId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "GRANT"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "accountId",
+                "amountKrw",
+                "cashEntryId",
+                "budgetMonth",
+                "scheduledAt"
+              ],
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "amountKrw": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "cashEntryId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "budgetMonth": {
+                  "type": "string",
+                  "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+                },
+                "scheduledAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "PURCHASE"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "accountId",
+                "amountKrw",
+                "cashEntryId"
+              ],
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "amountKrw": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "cashEntryId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "BALANCE_LOOKUP"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "accountId",
+                "observationRef"
+              ],
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "observationRef": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 240,
+                  "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "CREATE"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "accountId",
+                "wishId",
+                "idempotencyKey",
+                "purpose",
+                "targetAmount",
+                "startDate",
+                "targetDate",
+                "photoId"
+              ],
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "wishId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "idempotencyKey": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "purpose": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "targetAmount": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "startDate": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "format": "date",
+                      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "targetDate": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "format": "date",
+                      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "photoId": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "DEPOSIT"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "accountId",
+                "wishId",
+                "amount",
+                "expectedVersion",
+                "idempotencyKey"
+              ],
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "wishId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "amount": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "expectedVersion": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "idempotencyKey": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "WITHDRAW"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "accountId",
+                "wishId",
+                "amount",
+                "expectedVersion",
+                "idempotencyKey"
+              ],
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "wishId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "amount": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "expectedVersion": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "idempotencyKey": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "TRANSFER"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "accountId",
+                "sourceWishId",
+                "destinationWishId",
+                "amount",
+                "sourceExpectedVersion",
+                "destinationExpectedVersion",
+                "idempotencyKey",
+                "rootEventId",
+                "sourceEffectId",
+                "destinationEffectId"
+              ],
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "sourceWishId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "destinationWishId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "amount": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "sourceExpectedVersion": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "destinationExpectedVersion": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "idempotencyKey": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "rootEventId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "sourceEffectId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "destinationEffectId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "COMPLETE"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "accountId",
+                "wishId",
+                "expectedVersion",
+                "idempotencyKey",
+                "confirmed"
+              ],
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "wishId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "expectedVersion": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "idempotencyKey": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "confirmed": {
+                  "const": true
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "ABANDON"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "accountId",
+                "wishId",
+                "expectedVersion",
+                "idempotencyKey"
+              ],
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "wishId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "expectedVersion": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "idempotencyKey": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "DELETE"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "accountId",
+                "wishId",
+                "expectedVersion",
+                "idempotencyKey"
+              ],
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "wishId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "expectedVersion": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "idempotencyKey": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "FOLLOW"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "academyId",
+                "viewerStudentId",
+                "ownerStudentId"
+              ],
+              "properties": {
+                "academyId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "viewerStudentId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "ownerStudentId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "UNFOLLOW"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "academyId",
+                "viewerStudentId",
+                "ownerStudentId"
+              ],
+              "properties": {
+                "academyId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "viewerStudentId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "ownerStudentId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "BLOCK"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "academyId",
+                "viewerStudentId",
+                "ownerStudentId"
+              ],
+              "properties": {
+                "academyId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "viewerStudentId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "ownerStudentId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "UNBLOCK"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "academyId",
+                "viewerStudentId",
+                "ownerStudentId"
+              ],
+              "properties": {
+                "academyId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "viewerStudentId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "ownerStudentId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "SHARE"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "accountId",
+                "wishId",
+                "expectedVersion",
+                "visibility"
+              ],
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "wishId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "expectedVersion": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "visibility": {
+                  "type": "string",
+                  "enum": [
+                    "PRIVATE",
+                    "FOLLOWERS",
+                    "ACADEMY"
+                  ]
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "VISIBILITY_CHANGE"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "accountId",
+                "wishId",
+                "expectedVersion",
+                "visibility"
+              ],
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "wishId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "expectedVersion": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "visibility": {
+                  "type": "string",
+                  "enum": [
+                    "PRIVATE",
+                    "FOLLOWERS",
+                    "ACADEMY"
+                  ]
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "FEED_QUERY"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "academyId",
+                "limit",
+                "cursor",
+                "resultContextId",
+                "orderedCardIds",
+                "requestRef",
+                "responseRef"
+              ],
+              "properties": {
+                "academyId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "cursor": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 8192
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "resultContextId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "orderedCardIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                  },
+                  "minItems": 0,
+                  "maxItems": 100
+                },
+                "requestRef": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 240,
+                  "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                },
+                "responseRef": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 240,
+                  "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "IMPRESSION"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "academyId",
+                "resultContextId",
+                "cardId",
+                "position",
+                "impressionId"
+              ],
+              "properties": {
+                "academyId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "resultContextId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "cardId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "position": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 99
+                },
+                "impressionId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "CLICK"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "academyId",
+                "resultContextId",
+                "cardId",
+                "position",
+                "impressionId",
+                "clickKind"
+              ],
+              "properties": {
+                "academyId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "resultContextId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "cardId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "position": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 99
+                },
+                "impressionId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "clickKind": {
+                  "const": "AUTHOR_PROFILE"
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "PROFILE_VISIT"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "academyId",
+                "targetStudentId",
+                "source",
+                "sourceEventId"
+              ],
+              "properties": {
+                "academyId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "targetStudentId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "source": {
+                  "type": "string",
+                  "enum": [
+                    "DIRECT",
+                    "FEED",
+                    "PROFILE",
+                    "OTHER"
+                  ]
+                },
+                "sourceEventId": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "INFLUENCED_DECISION"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "signalType",
+                "signalEventId",
+                "decisionEventId"
+              ],
+              "properties": {
+                "signalType": {
+                  "type": "string",
+                  "enum": [
+                    "IMPRESSION",
+                    "CLICK",
+                    "PROFILE_VISIT"
+                  ]
+                },
+                "signalEventId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "decisionEventId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "CLOSE_WEEK"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "accountId",
+                "startInclusive",
+                "endExclusive",
+                "snapshotRef",
+                "requestRef",
+                "responseRef",
+                "storedStateRef",
+                "generationId"
+              ],
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "startInclusive": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+                },
+                "endExclusive": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+                },
+                "snapshotRef": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 240,
+                  "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                },
+                "requestRef": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 240,
+                  "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                },
+                "responseRef": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 240,
+                  "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                },
+                "storedStateRef": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 240,
+                  "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                },
+                "generationId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eventId",
+            "sequence",
+            "occurredAt",
+            "actorStudentId",
+            "kind",
+            "causes",
+            "command",
+            "outcome",
+            "artifactRefs"
+          ],
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "occurredAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "actorStudentId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+            },
+            "kind": {
+              "const": "CLOSE_MONTH"
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "command": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "accountId",
+                "startInclusive",
+                "endExclusive",
+                "snapshotRef",
+                "requestRef",
+                "responseRef",
+                "storedStateRef",
+                "generationId"
+              ],
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                },
+                "startInclusive": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+                },
+                "endExclusive": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+                },
+                "snapshotRef": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 240,
+                  "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                },
+                "requestRef": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 240,
+                  "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                },
+                "responseRef": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 240,
+                  "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                },
+                "storedStateRef": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 240,
+                  "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                },
+                "generationId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                }
+              }
+            },
+            "outcome": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "APPLIED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "REJECTED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "resultRef"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "FAILED"
+                    },
+                    "resultRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+                    }
+                  }
+                }
+              ]
+            },
+            "artifactRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240,
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            }
+          }
+        }
+      ]
+    },
+    "idMap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "schemaKind",
+        "datasetId",
+        "entries"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "schemaKind": {
+          "const": "demo-simulation-id-map"
+        },
+        "datasetId": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "entityKind",
+              "logicalId",
+              "replayUuid",
+              "ownerAccountId"
+            ],
+            "properties": {
+              "entityKind": {
+                "type": "string",
+                "enum": [
+                  "ACADEMY",
+                  "STUDENT",
+                  "ACCOUNT",
+                  "WISH",
+                  "LEDGER_ROOT",
+                  "LEDGER_EFFECT",
+                  "BALANCE_OBSERVATION",
+                  "ADJUSTMENT_CASE",
+                  "SHARED_CARD",
+                  "FEED_CONTEXT",
+                  "BEHAVIOR_EVENT",
+                  "RECAP_GENERATION"
+                ]
+              },
+              "logicalId": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "replayUuid": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              "ownerAccountId": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          "minItems": 0,
+          "maxItems": 1000000
+        }
+      }
+    },
+    "rawIndex": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "schemaKind",
+        "datasetId",
+        "records"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "schemaKind": {
+          "const": "demo-simulation-raw-index"
+        },
+        "datasetId": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "byteLength",
+              "sha256",
+              "contentType",
+              "service",
+              "modelVersion",
+              "eventId",
+              "kind"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$",
+                "minLength": 1,
+                "maxLength": 240
+              },
+              "byteLength": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 134217728
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "contentType": {
+                "type": "string",
+                "pattern": "^[a-z0-9.+-]+/[a-z0-9.+-]+(?:; charset=utf-8)?$",
+                "maxLength": 100
+              },
+              "service": {
+                "type": "string",
+                "enum": [
+                  "BACKEND",
+                  "POSTGRESQL",
+                  "FEED",
+                  "RECAP"
+                ]
+              },
+              "modelVersion": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 240
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "eventId": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "REQUEST",
+                  "RESPONSE",
+                  "STORED_DOCUMENT",
+                  "RUNTIME_OBSERVATION"
+                ]
+              }
+            }
+          },
+          "minItems": 0,
+          "maxItems": 1000000
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "schemaKind",
+        "datasetId",
+        "configDigest",
+        "schemaDigest",
+        "ruleVersion",
+        "rules",
+        "counts",
+        "independentAggregates"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "schemaKind": {
+          "const": "demo-simulation-validation"
+        },
+        "datasetId": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "configDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "schemaDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "ruleVersion": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "rule",
+              "status",
+              "checkedCount",
+              "errors",
+              "artifactRefs"
+            ],
+            "properties": {
+              "rule": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "PASS",
+                  "FAIL",
+                  "NOT_RUN"
+                ]
+              },
+              "checkedCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "errors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "code",
+                    "rule",
+                    "logicalId",
+                    "occurredAt",
+                    "message",
+                    "artifactRefs"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                    },
+                    "rule": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                    },
+                    "logicalId": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "occurredAt": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "message": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240
+                    },
+                    "artifactRefs": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$",
+                        "minLength": 1,
+                        "maxLength": 240
+                      },
+                      "minItems": 0,
+                      "maxItems": 1000000
+                    }
+                  }
+                },
+                "minItems": 0,
+                "maxItems": 1000000
+              },
+              "artifactRefs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$",
+                  "minLength": 1,
+                  "maxLength": 240
+                },
+                "minItems": 0,
+                "maxItems": 1000000
+              }
+            }
+          },
+          "minItems": 0,
+          "maxItems": 1000000
+        },
+        "counts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "value"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "value": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            }
+          },
+          "minItems": 0,
+          "maxItems": 1000000
+        },
+        "independentAggregates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "value"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "value": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            }
+          },
+          "minItems": 0,
+          "maxItems": 1000000
+        }
+      }
+    },
+    "cashState": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Cash sub-export for independent event/ledger/balance comparison. Not the complete relational import state.",
+      "required": [
+        "schemaVersion",
+        "schemaKind",
+        "datasetId",
+        "ledger",
+        "balances"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "schemaKind": {
+          "const": "demo-simulation-cash-state"
+        },
+        "datasetId": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "ledger": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 100000,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "eventId",
+              "accountId",
+              "sequence",
+              "occurredAt",
+              "kind",
+              "amountKrw",
+              "balanceAfter"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "eventId": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "accountId": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "sequence": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "occurredAt": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+              },
+              "kind": {
+                "enum": [
+                  "GRANT",
+                  "PURCHASE"
+                ]
+              },
+              "amountKrw": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "balanceAfter": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            }
+          }
+        },
+        "balances": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100000,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "accountId",
+              "amountKrw",
+              "sequence"
+            ],
+            "properties": {
+              "accountId": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9:_-]{1,160}$"
+              },
+              "amountKrw": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "sequence": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
