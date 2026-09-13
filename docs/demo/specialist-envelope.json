@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "schema_kind": "specialist-envelope",
+  "role": "backend-implementer",
+  "feature_id": "demo-student-behavior-simulation",
+  "status": "blocked",
+  "evidence": [
+    {
+      "schema_kind": "codex-action-binding",
+      "action_id": "act-e0c752efc0ee69d935dbb4025363027a",
+      "action_digest": "sha256:88784addb196a119ea4a654439c05434490c010dbb999be68c792ff6c0ee2c4f"
+    },
+    {
+      "kind": "source_heads",
+      "data_head": "3b081b7a51523cdf8d24a6991b7e914e0fd8bc48",
+      "backend_head": "cfd4e400b865a8fbe99b2f27f638b05edf1cfa0e",
+      "data_changes_committed": false,
+      "backend_worktree_modified": false,
+      "final_data_source_digest": "sha256:bca183b26d4853a8fdda3d8a1e69a38e251465d8efa74c28e247c09264c59f0c"
+    },
+    {
+      "kind": "full_generation_and_validation",
+      "status": "DISCOVERY_COMPLETED",
+      "students": 100,
+      "events": 18396,
+      "applied_events": 18386,
+      "rejected_events": 10,
+      "weekly_closes": 1216,
+      "monthly_closes": 256,
+      "independent_oracle": "PASS",
+      "raw_records": 78085,
+      "raw_bytes": 13828962213,
+      "all_raw_checksums_verified": true,
+      "influence_annotations": 96,
+      "dormancy_returns": 16,
+      "report_sha256": "sha256:9116992d79be1e86f1b01c6f0b97e8edc107aa4fdbf96fd1af8a81c6dc1ef630"
+    },
+    {
+      "kind": "delivery_package",
+      "dataset_id": "sha256:4321c0be722100494edb880f16474481a11c2b076a5634bf1815057d075d28bc",
+      "manifest_digest": "sha256:4aa120ac66807f8052207f9b5da2733030795a2120510ef6cfe2df1bb09496d4",
+      "files": 78095,
+      "manifest_bytes": 13432329,
+      "max_artifact_bytes": 19967699,
+      "aggregate_bytes": 13862132635,
+      "allowed_aggregate_bytes": 8589934592,
+      "backend_admission": "REJECTED: SCHEMA_INVALID: total bundle byte limit",
+      "fixed_replay_processes": 0,
+      "two_replay_comparison_verified": false
+    },
+    {
+      "kind": "csv_readback",
+      "status": "PASS",
+      "rows": {
+        "users": 100,
+        "card_accounts": 100,
+        "wishes": 222,
+        "savings_transactions": 1693,
+        "feed_posts": 138,
+        "profile_visits": 1752
+      },
+      "legacy_fetch_and_conversion": "PASS",
+      "per_wish_ledger_reconciliation": "PASS",
+      "current_allocated_amount_krw": 633196
+    },
+    {
+      "kind": "local_management_readback",
+      "status": "BLOCKED_BEFORE_APPLY",
+      "prepare_error": "IMPORT_ROW_OUTSIDE_TARGET: mismatch_notification_outbox",
+      "affected_rows": 37,
+      "typed_parent_ownership_verified": true,
+      "dry_run_rollback_verified": true,
+      "unchanged_fingerprint": "sha256:afea409b751e635c1fa5f2560c39a1afe6bfad260f3fbfe7dbf0817c58d3b7f1",
+      "application_executed": false,
+      "restore_executed": false,
+      "owned_postgres_containers_removed": 4,
+      "report_sha256": "sha256:8187fe31b4ad8e90394f586902bd3241deb5c716c0714ce199fcb87728c5dc78"
+    },
+    {
+      "kind": "tests",
+      "command": "CRABIT_BACKEND_OPENAPI=../crabit-backend/api/openapi.yaml python3 -m unittest discover -s tests -v",
+      "passed": 77,
+      "skipped": 0,
+      "elapsed_seconds": 4.458,
+      "log_sha256": "sha256:7ce58e3b2f037905b4ef6c148d365c0e8926c7176787582d023a6b82e15609d2",
+      "git_diff_check": "PASS"
+    },
+    {
+      "kind": "measured_resources",
+      "generation_elapsed_seconds": 4874.338,
+      "generation_jvm_peak_rss_bytes": 3745103872,
+      "generation_jvm_peak_memory_footprint_bytes": 4711289224,
+      "generator_python_peak_rss_bytes": 65585152,
+      "scope": "Individual process measurements; not an aggregate process-tree peak"
+    },
+    {
+      "kind": "authority_boundary",
+      "feature_run_action_receipt_changes": false,
+      "other_repository_source_changes": false,
+      "external_demo_applied": false,
+      "commit_push_or_remote_pr_created": false,
+      "host_fixed_replay_approval": "REJECTED: oversized input and storage exhaustion risk",
+      "safer_read_only_admission_executed": true,
+      "separately_authorized_local_prepare_readback_executed": true
+    },
+    {
+      "kind": "material_scope_deviation",
+      "path": ".gitignore",
+      "approved_write_path": false,
+      "reason": "실제 계약/검증 보고서 추적 예외와 대용량 로컬 RAW Git 제외를 추가했다."
+    },
+    {
+      "kind": "material_scope_deviation",
+      "path": "feed/ranking.py",
+      "approved_write_path": false,
+      "reason": "실제 e3099 Java 오라클 순서 불일치를 재현해 Python 보상 sum을 binary64 순차 합산으로 수정했다."
+    },
+    {
+      "kind": "material_scope_deviation",
+      "path": "api/feed-ranking-v1.yaml",
+      "approved_write_path": false,
+      "reason": "현재 backend OpenAPI 원본 digest만 동기화했으며 피드 확장 본문은 동일하다."
+    },
+    {
+      "kind": "material_scope_deviation",
+      "path": "tests/test_feed_contract_projection.py",
+      "approved_write_path": false,
+      "reason": "동기화한 실제 canonical OpenAPI/projection digest 기준으로 계약 회귀 검사를 갱신했다."
+    },
+    {
+      "kind": "material_scope_deviation",
+      "path": "monthly_batch.py",
+      "approved_write_path": false,
+      "reason": "실제 CSV의 ISO 오프셋 및 마이크로초 시각을 KST 비교값으로 읽도록 지원했다."
+    },
+    {
+      "kind": "material_scope_deviation",
+      "path": "weekly_batch.py",
+      "approved_write_path": false,
+      "reason": "실제 CSV의 ISO 오프셋 및 마이크로초 시각을 KST 비교값으로 읽도록 지원했다."
+    }
+  ],
+  "artifacts": [
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/pull-request.md",
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/action-evidence.json",
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/dataset-summary.json",
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/backend-blockers.json",
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/test-evidence.json",
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/final-source-inventory.json",
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/artifacts/package-04/package.json",
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/artifacts/package-04/bundle/manifest.json",
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/artifacts/application-06/verification.json",
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/artifacts/fixed-replay-not-executed-04.json",
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/artifacts/package-04/csv/users.csv",
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/artifacts/package-04/csv/card_accounts.csv",
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/artifacts/package-04/csv/wishes.csv",
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/artifacts/package-04/csv/savings_transactions.csv",
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/artifacts/package-04/csv/feed_posts.csv",
+    "/Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/artifacts/package-04/csv/profile_visits.csv"
+  ],
+  "blockers": [
+    "정상 NOT_ELIGIBLE 79건의 응답 파일이 없는데 계약은 responseRef/실제 파일을 필수로 요구한다. 전체 원본 타임라인 검사는 ARTIFACT_REF event=e5101로 거절된다.",
+    "실제 bundle 13,862,132,635바이트가 고정 8 GiB 한도를 초과한다. 기존 reader는 모든 RAW를 읽고 복제하므로 한도 숫자만 올리는 것으로 검증되지 않는다.",
+    "실제 전체 PREPARE는 mismatch_notification_outbox 37개 행의 adjustment_case_id 부모 소속 경로를 처리하지 못해 거절된다. 실제 APPLY와 RESTORE는 미실행이다."
+  ],
+  "requested_changes": [
+    "부모 컨트롤러의 정확한 BACKEND 수정 액션으로 NOT_ELIGIBLE 무응답 표현을 schema/캡처/입장/재생에서 일치시켜야 한다.",
+    "전체 원본과 100명 범위를 보존하며 실제 용량·메모리·디스크 예산과 8 GiB 계약의 충돌을 해결한 뒤 두 새 DB 고정 재생 및 5개 정규화 파일 비교를 수행해야 한다.",
+    "outbox의 조정 사례→계좌 소속 검사를 수정한 뒤 실제 로컬 APPLY/INSPECT/RESTORE를 검증해야 한다. 원본 행 삭제나 계약 검사 우회는 하지 않았다."
+  ],
+  "suggested_transition": null,
+  "summary": "100명·18,396개 이벤트·1,472개 마감의 전체 생성과 독립 오라클, 6 CSV 읽기·원장 대조, 최종 테스트 77개를 완료했다. 전체 증거 패키지와 상세 한국어 PR 인계를 남겼다. 세 backend 차단 사유로 고정 재생과 실제 적용·복원은 완료되지 않았다. PREPARE 실패 후 실제 INSPECT로 DB fingerprint/journal 보존을 확인했고 소유 임시 DB 4개를 정리했다. Feature Run/action 상태와 외부 데모는 변경하지 않았다.\n\n자동 승인 검토가 두 번의 고정 재생을 용량 초과·디스크 고갈 위험으로 거절했다. 해당 명령은 실행하지 않았으며, 안전한 읽기 전용 입장 검사와 별도 승인된 로컬 PREPARE/rollback read-back을 대신 수행했다."
+}

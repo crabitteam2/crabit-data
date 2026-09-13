@@ -8,3 +8,13 @@ __pycache__/
 !README.md
 !docs/recap/input-parity.md
 !tests/fixtures/recap-input-parity/*.json
+
+# Reviewed simulation source contracts and handoff; raw local runs remain ignored.
+!api/demo-simulation-v1.schema.json
+!docs/demo/*.md
+!docs/demo/*.json
+
+!tests/fixtures/synthetic-data/*.json
+
+# Immutable local simulation evidence is checksummed by delivery reports, not committed.
+/docs/demo/artifacts/

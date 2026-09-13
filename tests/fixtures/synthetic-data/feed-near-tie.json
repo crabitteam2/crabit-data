@@ -1,0 +1,743 @@
+{
+  "request": {
+    "schema_version": 1,
+    "request_id": "be101491-8cf2-4ec0-8836-c8e72cc59072",
+    "context_id": "7eda0f25-c066-484d-870b-b13d03e6928d",
+    "viewer_id": "18212d16-858d-42d2-8780-8802e26cb310",
+    "academy_id": "00000000-0000-0000-0000-000000000101",
+    "recommendation_at": "2026-06-17T03:00:00.087Z",
+    "timezone": "Asia/Seoul",
+    "feature_version": "feed-features-v1",
+    "classifier_version": "wish-category-v1@sha256:de23b80260907e3d818892c0ea6ba2d9d28251e49d75a812fb925e1a47733f61",
+    "viewer_previous_month": {
+      "month": "2026-05",
+      "coverage": "UNOBSERVED",
+      "metrics_version": "core-metrics-v1",
+      "values": null
+    },
+    "candidates": [
+      {
+        "card_id": "48a396da-44f3-49db-ab8a-690d5c41f57f",
+        "author_id": "6514c7aa-7c80-4355-91d6-8b5ef47fcf38",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.342Z",
+        "target_date": null,
+        "closed_at": null,
+        "content_updated_at": "2026-06-17T03:00:00.038Z",
+        "category_id": "스포츠",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.13333333333333333,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "a8fec2e2-d03a-4401-98a4-f253ee82afe4",
+        "author_id": "73183f48-558c-4513-b4ed-448e9addb843",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.247Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-17T03:00:00.027Z",
+        "category_id": "취미",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.0,
+        "visited_author_before": false,
+        "visited_category_before": false,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "501f36f7-967c-41a5-8b3e-a4031d32bf3e",
+        "author_id": "fec57c8e-21c0-4179-b420-ede7cb248122",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-13T03:00:00.012Z",
+        "target_date": null,
+        "closed_at": null,
+        "content_updated_at": "2026-06-17T03:00:00.002Z",
+        "category_id": "전자기기",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.14285714285714285,
+        "visited_author_before": false,
+        "visited_category_before": false,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "7dcb288d-120b-444d-9ee4-5b3005ffe2ea",
+        "author_id": "b9274e29-4414-4161-856a-c9d8a3341b11",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-14T03:00:00.083Z",
+        "target_date": "2026-07-14",
+        "closed_at": null,
+        "content_updated_at": "2026-06-16T03:00:00.103Z",
+        "category_id": "기타",
+        "basic_similarity": 0.3333333333333333,
+        "title_similarity": 1.0,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "3530793e-e9a5-4394-b642-657e025382c6",
+        "author_id": "80fa33d4-754a-4fc4-96ec-ae0b000eac68",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.579Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-16T03:00:00.094Z",
+        "category_id": "스포츠",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.0,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "832c6263-03b6-41bb-9268-acfafc535b60",
+        "author_id": "aaf32f98-4d8a-4ffe-afc2-71fbb9674a23",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.359Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-16T03:00:00.043Z",
+        "category_id": "전자기기",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.0,
+        "visited_author_before": false,
+        "visited_category_before": false,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "e0091dfc-d8fd-4999-afa7-5723b8d2b76c",
+        "author_id": "3ebc56dd-05c4-40ec-a374-9d10b42ebff1",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.737Z",
+        "target_date": "2026-08-30",
+        "closed_at": null,
+        "content_updated_at": "2026-06-15T03:00:00.240Z",
+        "category_id": "스포츠",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.0,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "2868b130-01fe-473e-8774-088a6b66c5db",
+        "author_id": "ab70c7df-5041-4d87-b920-e63d81ad3068",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.419Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-15T03:00:00.159Z",
+        "category_id": "스포츠",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.13333333333333333,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "3de64347-9f20-436b-8452-07f695a6c182",
+        "author_id": "129d7b2a-38a2-4909-8542-b1f890954d6e",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.305Z",
+        "target_date": null,
+        "closed_at": null,
+        "content_updated_at": "2026-06-15T03:00:00.143Z",
+        "category_id": "도서",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.3333333333333333,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "fba8ae8d-ed66-4ba7-ac78-962fba0d789a",
+        "author_id": "ae282e57-6613-4efc-9bad-0c3c6ebf1ee4",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.277Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-15T03:00:00.136Z",
+        "category_id": "기타",
+        "basic_similarity": 0.3333333333333333,
+        "title_similarity": 1.0,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "20b07fdc-45df-4c47-9968-d07eb0ee1740",
+        "author_id": "3ac8bba2-e1ad-4a4e-b56c-3dc8bff3de0d",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.729Z",
+        "target_date": "2026-08-30",
+        "closed_at": null,
+        "content_updated_at": "2026-06-14T03:00:00.122Z",
+        "category_id": "문구",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.0,
+        "visited_author_before": false,
+        "visited_category_before": false,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "507eeb2f-30e0-4975-90a4-7be32b227e7e",
+        "author_id": "ed26b71e-8d7a-447b-9b88-1e730b747677",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.665Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-14T03:00:00.117Z",
+        "category_id": "취미",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.0,
+        "visited_author_before": false,
+        "visited_category_before": false,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "1bcf14a1-6889-4a56-ba9d-502b889775df",
+        "author_id": "8edf45d1-063a-4272-a0a7-9cf4a204d106",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.596Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-14T03:00:00.094Z",
+        "category_id": "취미",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.0,
+        "visited_author_before": false,
+        "visited_category_before": false,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "c466dfad-faf6-4638-b2db-cdf38c0b6120",
+        "author_id": "b9274e29-4414-4161-856a-c9d8a3341b11",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.588Z",
+        "target_date": "2026-11-28",
+        "closed_at": null,
+        "content_updated_at": "2026-06-14T03:00:00.086Z",
+        "category_id": "도서",
+        "basic_similarity": 0.3333333333333333,
+        "title_similarity": 0.3076923076923077,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "c2533e39-c087-4626-90d5-3d3ab48060c3",
+        "author_id": "7b540065-6263-4270-bdf6-d743d4468333",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.269Z",
+        "target_date": "2026-08-30",
+        "closed_at": null,
+        "content_updated_at": "2026-06-14T03:00:00.028Z",
+        "category_id": "기타",
+        "basic_similarity": 0.3333333333333333,
+        "title_similarity": 1.0,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "655982b7-adc6-47e2-aef5-7473cb350a4e",
+        "author_id": "8ef9a0a5-ea40-4436-937a-6110cef739fc",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.287Z",
+        "target_date": null,
+        "closed_at": null,
+        "content_updated_at": "2026-06-13T03:00:00.047Z",
+        "category_id": "기타",
+        "basic_similarity": 0.3333333333333333,
+        "title_similarity": 1.0,
+        "visited_author_before": true,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "784b89cc-f32f-4b55-801c-85eedb49eced",
+        "author_id": "fec57c8e-21c0-4179-b420-ede7cb248122",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.087Z",
+        "target_date": null,
+        "closed_at": null,
+        "content_updated_at": "2026-06-13T03:00:00.006Z",
+        "category_id": "전자기기",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.0,
+        "visited_author_before": false,
+        "visited_category_before": false,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "b55f3c5b-8b70-4359-b88e-11608c41e31c",
+        "author_id": "3910fdc5-72a0-4a15-9b00-8550a60a01f3",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.606Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-12T03:00:00.086Z",
+        "category_id": "기타",
+        "basic_similarity": 0.3333333333333333,
+        "title_similarity": 1.0,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "fd21f630-6dbb-4279-a981-f82606ef61d5",
+        "author_id": "497e9dd5-f018-4295-9198-a5f1b43e07e3",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-10T03:00:00.086Z",
+        "target_date": "2026-07-10",
+        "closed_at": null,
+        "content_updated_at": "2026-06-12T03:00:00.055Z",
+        "category_id": "전자기기",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.0,
+        "visited_author_before": false,
+        "visited_category_before": false,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "4a80c396-091e-4fcb-8e6f-27538534c378",
+        "author_id": "d5afac3f-fb7f-41d1-8433-08d1190e1172",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.217Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-12T03:00:00.021Z",
+        "category_id": "스포츠",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.13333333333333333,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "c54ecf90-feee-4322-96aa-c4d890987a29",
+        "author_id": "a2b1f3c0-45a5-4938-8b69-282742dfb878",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.637Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-11T03:00:00.050Z",
+        "category_id": "스포츠",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.0,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "cee3b9a2-d27f-4e9f-ab06-adf6ed3847ed",
+        "author_id": "78bbaff4-018f-4794-82df-24eec0ed0335",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.315Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-11T03:00:00.024Z",
+        "category_id": "전자기기",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.0,
+        "visited_author_before": false,
+        "visited_category_before": false,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "355adabc-a399-49b1-bf10-9abbf383d809",
+        "author_id": "2fe112c9-f3eb-4373-85dc-fec3675105e4",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.659Z",
+        "target_date": null,
+        "closed_at": null,
+        "content_updated_at": "2026-06-10T03:00:00.156Z",
+        "category_id": "도서",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.3076923076923077,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "e6602a6d-12e4-478f-93c2-20211c0745c9",
+        "author_id": "00d8c2f5-67c7-4609-bd7e-0560eeba35f5",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.369Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-10T03:00:00.073Z",
+        "category_id": "도서",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.3333333333333333,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "0c66f7e8-c577-41fe-91e0-3f451def4b77",
+        "author_id": "d5289fc2-b157-4430-927b-108528fc3e77",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.437Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-09T03:00:00.044Z",
+        "category_id": "도서",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.3076923076923077,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "4dd32227-ece2-455b-8272-61f5e9bfae48",
+        "author_id": "0885189c-ae88-43c2-bd1d-32428139de6a",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.184Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-08T03:00:00.108Z",
+        "category_id": "전자기기",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.0,
+        "visited_author_before": false,
+        "visited_category_before": false,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "d2d6bfaf-ddcf-4f5c-9aeb-5312e3523239",
+        "author_id": "497e9dd5-f018-4295-9198-a5f1b43e07e3",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.387Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-05T03:00:00.036Z",
+        "category_id": "도서",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.3076923076923077,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "41856baa-f93e-443c-8fe7-4347ece4da9f",
+        "author_id": "15195129-796b-4a9e-923a-ee4b842e78d3",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-04T03:00:00.096Z",
+        "target_date": "2026-12-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-04T03:00:00.097Z",
+        "category_id": "스포츠",
+        "basic_similarity": 0.6666666666666666,
+        "title_similarity": 0.13333333333333333,
+        "visited_author_before": true,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "b28e9330-f7b3-42d0-b6a5-dfe44bbc947f",
+        "author_id": "4841a7b7-f7bb-4af1-8f25-c09e10f75897",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.489Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-03T03:00:00.069Z",
+        "category_id": "전자기기",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.0,
+        "visited_author_before": false,
+        "visited_category_before": false,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "9a5853f1-4dc0-46d4-87a1-d576081fa840",
+        "author_id": "8a73c8e0-fd0a-4dda-ab10-5db81d21844f",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.704Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-02T03:00:00.123Z",
+        "category_id": "기타",
+        "basic_similarity": 0.3333333333333333,
+        "title_similarity": 1.0,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "0ca154a3-a3b9-4d92-a08f-89b0d15702c4",
+        "author_id": "15195129-796b-4a9e-923a-ee4b842e78d3",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.675Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-01T03:00:00.676Z",
+        "category_id": "스포츠",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.13333333333333333,
+        "visited_author_before": true,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "a0ad728b-6a09-49aa-a926-6a4c972840fc",
+        "author_id": "91b63b08-aee5-4a6a-8709-c60ee2a2e055",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.516Z",
+        "target_date": "2026-08-30",
+        "closed_at": null,
+        "content_updated_at": "2026-06-01T03:00:00.517Z",
+        "category_id": "도서",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.3076923076923077,
+        "visited_author_before": true,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "99df1995-22a5-4990-9f75-048ea8de3277",
+        "author_id": "0d06dc34-1755-4800-af34-621a1c180ba5",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.496Z",
+        "target_date": "2026-08-30",
+        "closed_at": null,
+        "content_updated_at": "2026-06-01T03:00:00.497Z",
+        "category_id": "스포츠",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.0,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "8d54de36-3e6c-4e9f-a137-91a7d0d230de",
+        "author_id": "ce4dde72-7e5e-4478-89d7-3baee8e3ac71",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.394Z",
+        "target_date": "2026-07-01",
+        "closed_at": null,
+        "content_updated_at": "2026-06-01T03:00:00.395Z",
+        "category_id": "도서",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.3333333333333333,
+        "visited_author_before": true,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      },
+      {
+        "card_id": "34c91790-479a-4c5e-b937-171861e2d471",
+        "author_id": "6514c7aa-7c80-4355-91d6-8b5ef47fcf38",
+        "state": "IN_PROGRESS",
+        "created_at": "2026-06-01T03:00:00.339Z",
+        "target_date": null,
+        "closed_at": null,
+        "content_updated_at": "2026-06-01T03:00:00.340Z",
+        "category_id": "도서",
+        "basic_similarity": 0.0,
+        "title_similarity": 0.3333333333333333,
+        "visited_author_before": false,
+        "visited_category_before": true,
+        "author_previous_month": {
+          "month": "2026-05",
+          "coverage": "UNOBSERVED",
+          "metrics_version": "core-metrics-v1",
+          "values": null
+        }
+      }
+    ]
+  },
+  "expected": [
+    "655982b7-adc6-47e2-aef5-7473cb350a4e",
+    "41856baa-f93e-443c-8fe7-4347ece4da9f",
+    "c466dfad-faf6-4638-b2db-cdf38c0b6120",
+    "501f36f7-967c-41a5-8b3e-a4031d32bf3e",
+    "a8fec2e2-d03a-4401-98a4-f253ee82afe4",
+    "20b07fdc-45df-4c47-9968-d07eb0ee1740",
+    "7dcb288d-120b-444d-9ee4-5b3005ffe2ea",
+    "fba8ae8d-ed66-4ba7-ac78-962fba0d789a",
+    "48a396da-44f3-49db-ab8a-690d5c41f57f",
+    "c2533e39-c087-4626-90d5-3d3ab48060c3",
+    "b55f3c5b-8b70-4359-b88e-11608c41e31c",
+    "3de64347-9f20-436b-8452-07f695a6c182",
+    "3530793e-e9a5-4394-b642-657e025382c6",
+    "2868b130-01fe-473e-8774-088a6b66c5db",
+    "9a5853f1-4dc0-46d4-87a1-d576081fa840",
+    "e0091dfc-d8fd-4999-afa7-5723b8d2b76c",
+    "8d54de36-3e6c-4e9f-a137-91a7d0d230de",
+    "a0ad728b-6a09-49aa-a926-6a4c972840fc",
+    "0ca154a3-a3b9-4d92-a08f-89b0d15702c4",
+    "4a80c396-091e-4fcb-8e6f-27538534c378"
+  ]
+}

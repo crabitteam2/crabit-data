@@ -1,0 +1,111 @@
+schema_version: 1
+schema_kind: specialist-envelope
+role: backend-implementer
+feature_id: demo-student-behavior-simulation
+status: ready
+summary: DATA 인계를 완료했다. 회귀 87개, 원본 패키지·독립 오라클과 fixed09의 두 전체 재생 결과를 재검증하고 한국어 PR
+  문서를 갱신했다. ready는 DATA 인계 상태이며 controller gate 또는 외부 적용 승인이 아니다.
+evidence:
+  - schema_kind: codex-action-binding
+    action_id: act-436b0642c07da619e645634fa22cf115
+    action_digest: sha256:c5cf2c0c200856442c8a690bad0ad3d08c0b10298287920bb7e53893150f00c1
+  - kind: repository
+    repository_id: crabit-data
+    head_sha: 3b081b7a51523cdf8d24a6991b7e914e0fd8bc48
+    branch: feature/demo-student-behavior-simulation
+    snapshot_digest: sha256:b90570996ed5ba4db894afa6e2dd3592194e7899dfc90dc08246d5277b5c52ed
+    worktree_creation_action: act-5572878adba5d21f7abc44976eb85a32
+    committed: false
+    source_code_changed_this_action: false
+  - kind: tests
+    command: CRABIT_BACKEND_OPENAPI=../crabit-backend/api/openapi.yaml python3 -m
+      unittest discover -s tests -v
+    exit_code: 0
+    passed: 87
+    failed: 0
+    skipped: 0
+    elapsed_seconds: 5.623
+    log_digest: sha256:95e3311959929a9a9411f890a99030556c0bf1ff97cc3bca36fd4759696c2a73
+    initial_sandbox_errors: Two loopback socket permission errors; host rerun passed all 87 tests.
+  - kind: fresh_readback
+    package_files: 78155
+    raw_records: 78085
+    students: 100
+    package_checksums: PASS
+    independent_oracle: PASS
+    fixed_replay_comparison: PASS
+    distinct_databases: 2
+    completed_events_each: 18396
+    identical_normalized_files: 5
+    full_replay_started_this_action: false
+    backend_report_digest: sha256:9feeccdee749fcd529b78c62cf59379e842de87b22f2a5e34d182d1270641c24
+  - kind: source_readback
+    data_files: 47
+    backend_overlay_entries: 26
+    execution_before_after_and_current_match: true
+    data_source_digest: sha256:9092235acded1a740d37cae9a756706af2674633b5e83a531357379fb7d44cef
+    backend_overlay_digest: sha256:9988facf77b43d3854236c13754e023272ac5958789e110012928f9b336d0249
+  - kind: validation_limits
+    backend_status: REPLAYED_PARTIAL_VALIDATION
+    fullDatasetValidationPerformed: false
+    readyForApplication: false
+    servingLatencyPolicyValidated: false
+    frontend_ui_verified: false
+    external_apply_verified: false
+    controller_gate_approved: false
+    parent_final_backend_suite: Session 25369 reported running; not claimed passed.
+  - kind: artifacts
+    verification_digest: sha256:f2815656dc07823a38e216114b40eca6387b2ab6e0e5ce8197dd9a904726bd1a
+    pull_request_digest: sha256:29aa992fe641026863f269ab34e2f6b4fd24dc9b0286e112b45b449cad6f61f9
+    changed_paths_this_action:
+      - docs/demo/pull-request.md
+      - docs/demo/verification-436b06.json
+      - docs/demo/verification-436b06/
+      - docs/demo/specialist-envelope-436b06.yaml
+    git_diff_check: PASS
+    feature_run_or_action_state_mutated: false
+    external_writes_performed: false
+  - kind: material_scope_deviation
+    path: .gitignore
+    approved_write_path: false
+    reason: "Inherited DATA change: exclude large/private artifacts and retain
+      reviewed contracts/reports."
+    changed_this_action: false
+  - kind: material_scope_deviation
+    path: feed/ranking.py
+    approved_write_path: false
+    reason: "Inherited DATA change: sequential binary64 summation matches the Java
+      ranking oracle."
+    changed_this_action: false
+  - kind: material_scope_deviation
+    path: api/feed-ranking-v1.yaml
+    approved_write_path: false
+    reason: "Inherited DATA change: refresh canonical OpenAPI provenance."
+    changed_this_action: false
+  - kind: material_scope_deviation
+    path: tests/test_feed_contract_projection.py
+    approved_write_path: false
+    reason: "Inherited DATA change: verify canonical OpenAPI/projection digests."
+    changed_this_action: false
+  - kind: material_scope_deviation
+    path: monthly_batch.py
+    approved_write_path: false
+    reason: "Inherited DATA change: support ISO offset/microsecond CSV timestamps."
+    changed_this_action: false
+  - kind: material_scope_deviation
+    path: weekly_batch.py
+    approved_write_path: false
+    reason: "Inherited DATA change: support ISO offset/microsecond CSV timestamps."
+    changed_this_action: false
+artifacts:
+  - /Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/pull-request.md
+  - /Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/verification-436b06.json
+  - /Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/verification-436b06/replay-readback.json
+  - /Users/ejunpark/Development/crabit/.worktrees/demo-student-behavior-simulation/crabit-data/docs/demo/verification-436b06/tests-host.log
+blockers: []
+requested_changes:
+  - Parent to finish its final backend suite and controller-owned
+    integration/review.
+  - Complete representative frontend UI/collection validation and external demo
+    application with authoritative feed/recap/Owner-console read-back.
+suggested_transition: null

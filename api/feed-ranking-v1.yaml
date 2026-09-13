@@ -6,7 +6,7 @@ info:
 x-canonical-source:
   repository: crabit-backend
   path: api/openapi.yaml
-  raw-byte-sha256: sha256:5d47820e5e66d0a8c3456cb099bea5303f85134ba2638893197fe2deac8a167a
+  raw-byte-sha256: sha256:c028a6dd7ae5e22e941b250e2a81b232d28a8f4ad597fa53aeba2e3b88094710
   extension: x-feed-ranking-v1
   extension-raw-sha256: sha256:9c0d46b9f3de8537d0146fe73bf5b77ad8211490d1e9d7473449ea1bb9898683
 paths:
